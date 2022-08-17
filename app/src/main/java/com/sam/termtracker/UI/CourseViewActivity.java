@@ -34,6 +34,8 @@ public class CourseViewActivity extends AppCompatActivity {
         Database db = Database.getDatabase(getApplication());
         courseDao = db.courseDAO();
 
+        courseDao.insertCourse(new Course("One", 10000, 10000, 1));
+
         List<Course> courseList = courseDao.getAll();
 
 
@@ -41,12 +43,12 @@ public class CourseViewActivity extends AppCompatActivity {
 
 
 
-        recyclerView = findViewById(R.id.recycler);
+        recyclerView = findViewById(R.id.courseRecycler);
         recyclerView.setAdapter(new CourseRecyclerAdapter(courseList, this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        fab = findViewById(R.id.floating_action_button);
+        fab = findViewById(R.id.courseFAB);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
