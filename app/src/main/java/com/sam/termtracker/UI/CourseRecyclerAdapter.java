@@ -14,10 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sam.termtracker.DAO.CourseDAO;
-import com.sam.termtracker.DAO.TermDAO;
 import com.sam.termtracker.Database.Database;
 import com.sam.termtracker.Entity.Course;
-import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.R;
 
 import java.util.List;
@@ -47,7 +45,7 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, CourseViewActivity.class);
+                    Intent intent = new Intent(context, TermInfoCourseViewActivity.class);
                     context.startActivity(intent);
 
                 }

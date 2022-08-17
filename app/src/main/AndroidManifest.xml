@@ -14,7 +14,7 @@
         android:theme="@style/Theme.TermTracker"
         tools:targetApi="31">
         <activity
-            android:name=".UI.CourseViewActivity"
+            android:name=".UI.TermInfoCourseViewActivity"
             android:parentActivityName=".UI.TermViewActivity"
             android:exported="false" />
         <activity

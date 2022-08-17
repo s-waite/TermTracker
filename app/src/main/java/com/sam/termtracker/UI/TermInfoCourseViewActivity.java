@@ -12,13 +12,12 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sam.termtracker.Database.Database;
 import com.sam.termtracker.Entity.Course;
-import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.R;
 import com.sam.termtracker.DAO.CourseDAO;
 
 import java.util.List;
 
-public class CourseViewActivity extends AppCompatActivity {
+public class TermInfoCourseViewActivity extends AppCompatActivity {
     CourseDAO courseDao;
     RecyclerView recyclerView;
     FloatingActionButton fab;
@@ -26,9 +25,9 @@ public class CourseViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_course_view);
+        setContentView(R.layout.activity_term_info_course_view);
 
-        getSupportActionBar().setTitle("Courses");
+        getSupportActionBar().setTitle("Term Info and Coursesj");
 
 
         Database db = Database.getDatabase(getApplication());
