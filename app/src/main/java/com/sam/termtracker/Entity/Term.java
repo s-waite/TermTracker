@@ -4,7 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "term")
+@Entity(tableName = "terms")
 public class Term {
     public Term() {
     }
@@ -16,9 +16,9 @@ public class Term {
     }
 
     @PrimaryKey(autoGenerate = true)
-    public int termId;
+    public int id;
 
-    @ColumnInfo(name = "Term")
+    @ColumnInfo(name = "Name")
     public String termName;
 
     @ColumnInfo(name = "Start Date")

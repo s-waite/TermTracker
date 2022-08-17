@@ -13,18 +13,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.sam.termtracker.DAO.CourseDAO;
 import com.sam.termtracker.DAO.TermDAO;
 import com.sam.termtracker.Database.Database;
+import com.sam.termtracker.Entity.Course;
 import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.R;
 
 import java.util.List;
 
 
-public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapter.ViewHolder> {
-    private List<Term> localDataSet;
+public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAdapter.ViewHolder> {
+    private List<Course> localDataSet;
     private Context context;
-    private TermDAO termDAO;
+    private CourseDAO courseDAO;
 
     /**
      * Provide a reference to the type of views that you are using
@@ -40,7 +42,7 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
             myTextView = (TextView) view.findViewById(R.id.itemTextView);
             editButton = view.findViewById(R.id.editButton);
             deleteButton = view.findViewById(R.id.deleteButton);
-            termDAO = Database.getDatabase(context).termDao();
+            courseDAO = Database.getDatabase(context).courseDAO();
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -71,7 +73,7 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
      * @param dataSet String[] containing the data to populate views to be used
      *                by RecyclerView.
      */
-    public TermRecyclerAdapter(List<Term> dataSet, Context context) {
+    public CourseRecyclerAdapter(List<Course> dataSet, Context context) {
         localDataSet = dataSet;
         this.context = context;
     }
@@ -96,7 +98,7 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
             public void onClick(View view) {
                 Intent intent = new Intent(context, EditTermActivity.class);
                 // pass the term object as an extra
-                intent.putExtra("termId", localDataSet.get(position).id);
+                intent.putExtra("termId", localDataSet.get(position).termId);
                 context.startActivity(intent);
             }
         });
@@ -108,7 +110,7 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
                         .setTitle("Delete This Term?")
                         .setMessage("This cannot be undone")
                         .setPositiveButton("Confirm", (dialogInterface, i) -> {
-                            termDAO.deleteTerm(localDataSet.get(position));
+//                            .deleteTerm(localDataSet.get(position));
                             localDataSet.remove(position);
                             notifyItemRemoved(position);
                         })
@@ -123,7 +125,7 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getMyTextView().setText(localDataSet.get(position).termName);
+        viewHolder.getMyTextView().setText(localDataSet.get(position).name);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
