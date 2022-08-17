@@ -45,7 +45,7 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(context, TermInfoCourseViewActivity.class);
+                    Intent intent = new Intent(context, CourseInfoAssessmentViewActivity.class);
                     context.startActivity(intent);
 
                 }
@@ -94,8 +94,9 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
         viewHolder.getMyImageButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, EditTermActivity.class);
+                Intent intent = new Intent(context, EditCourseActivity.class);
                 // pass the term object as an extra
+                intent.putExtra("courseId", localDataSet.get(position).id);
                 intent.putExtra("termId", localDataSet.get(position).termId);
                 context.startActivity(intent);
             }

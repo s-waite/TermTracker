@@ -27,7 +27,7 @@ public class TermInfoCourseViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_info_course_view);
 
-        getSupportActionBar().setTitle("Term Info and Coursesj");
+        getSupportActionBar().setTitle("Term Info and Courses");
 
 
         Database db = Database.getDatabase(getApplication());

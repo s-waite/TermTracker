@@ -8,6 +8,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.sam.termtracker.Entity.Course;
+import com.sam.termtracker.Entity.Term;
 
 import java.util.List;
 
@@ -25,4 +26,7 @@ public interface CourseDAO {
 
     @Query("SELECT * from courses")
     List<Course> getAll();
+
+    @Query("SELECT * FROM courses WHERE id = :id")
+    Course getCourseById(int id);
 }
