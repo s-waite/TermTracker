@@ -52,7 +52,7 @@ public class EditTermActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_term);
 
-        // Get a reference to our DAO
+        // Get a reference to the DAO
         db = Database.getDatabase(getApplication());
         termDAO = db.termDao();
 
@@ -60,11 +60,11 @@ public class EditTermActivity extends AppCompatActivity {
 
         initializeViews();
 
-        // Check if any extras are passed. If they are, this activity is editing a term
-        // If not then we are creating a new term
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            term = loadTermInfoIntoFields(extras);
+        // Check if active term is null
+        // If it is then we are creating a new term
+        if (db.activeTerm != null) {
+            term = termDAO.getTermById(db.activeTerm);
+            loadTermInfoIntoFields(term);
             // this bool keeps track of whether we are editing or creating a new term
             newTerm = false;
             actionBar.setTitle("Edit Term");
@@ -130,25 +130,18 @@ public class EditTermActivity extends AppCompatActivity {
 
     /**
      * When editing a term, loads the info from the term into the edit form.
-     * @param extras the data passed to the activity
-     * @return the term object that was passed as an extra from another activity to this
+     * @param term the term to load data from
      */
-    private Term loadTermInfoIntoFields(Bundle extras) {
+    private void loadTermInfoIntoFields(Term term) {
         DateTimeFormatter formatter = Helper.formatter;
-        int termId = extras.getInt("termId");
-        Term term = termDAO.getTermById(termId);
 
-        LocalDateTime startDateTime = LocalDateTime.ofEpochSecond(term.startDate, 0, ZoneOffset.UTC);
-        String startDate = formatter.format(startDateTime);
-        LocalDateTime endDateTime = LocalDateTime.ofEpochSecond(term.endDate, 0, ZoneOffset.UTC);
-        String endDate = formatter.format(endDateTime);
-
+        String startDate = Helper.epochToString(term.startDate);
+        String endDate = Helper.epochToString(term.endDate);
         String termName = term.termName;
 
         termNameInput.setText(termName);
         startDateInput.setText(startDate);
         endDateInput.setText(endDate);
-        return term;
     }
 
     /**

@@ -3,6 +3,7 @@ package com.sam.termtracker.UI;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,14 +22,18 @@ import com.sam.termtracker.R;
 import java.util.List;
 
 
+/**
+ * Recycler adapter for displaying a list of terms with options for each term
+ */
 public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapter.ViewHolder> {
     private List<Term> localDataSet;
+    private AlertDialog deleteTermAlertDialog;
     private Context context;
     private TermDAO termDAO;
+    private Database db;
 
     /**
-     * Provide a reference to the type of views that you are using
-     * (custom ViewHolder).
+     * A reference for the views within each recycler item
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView myTextView;
@@ -40,27 +45,28 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
             myTextView = (TextView) view.findViewById(R.id.itemTextView);
             editButton = view.findViewById(R.id.editButton);
             deleteButton = view.findViewById(R.id.deleteButton);
-            termDAO = Database.getDatabase(context).termDao();
+            db = Database.getDatabase(context);
+            termDAO = db.termDao();
 
+            // Open the term info along with course list when this item is pressed
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, TermInfoCourseViewActivity.class);
+                    // Set the active term in the database
+                    db.activeTerm = localDataSet.get(getAdapterPosition()).id;
                     context.startActivity(intent);
-
                 }
             });
         }
 
-        public TextView getMyTextView() {
+        public TextView getTextView() {
             return myTextView;
         }
-
-        public ImageButton getMyImageButton() {
+        public ImageButton getEditButton() {
             return editButton;
         }
-
-        public ImageButton getMyDeleteButton() {
+        public ImageButton getDeleteButton() {
             return deleteButton;
         }
     }
@@ -82,8 +88,6 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.list_item_term, viewGroup, false);
-
-
         return new ViewHolder(view);
     }
 
@@ -91,42 +95,42 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
         // click listener for "edit" button
-        viewHolder.getMyImageButton().setOnClickListener(new View.OnClickListener() {
+        viewHolder.getEditButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EditTermActivity.class);
-                // pass the term object as an extra
-                intent.putExtra("termId", localDataSet.get(position).id);
+                // Set the active term for the EditTermActivity to use
+                db.activeTerm = localDataSet.get(position).id;
                 context.startActivity(intent);
             }
         });
 
-        viewHolder.getMyDeleteButton().setOnClickListener(new View.OnClickListener() {
+        // click listener for delete button
+        viewHolder.getDeleteButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog myDialog = new MaterialAlertDialogBuilder(context)
-                        .setTitle("Delete This Term?")
-                        .setMessage("This cannot be undone")
-                        .setPositiveButton("Confirm", (dialogInterface, i) -> {
-                            termDAO.deleteTerm(localDataSet.get(position));
-                            localDataSet.remove(position);
-                            notifyItemRemoved(position);
-                        })
-                        .setNegativeButton("Cancel", ((dialogInterface, i) -> {
-                            dialogInterface.dismiss();
-                        }))
-                        .create();
-                myDialog.show();
-
+                    deleteTermAlertDialog = new MaterialAlertDialogBuilder(context)
+                            .setTitle("Delete This Term?")
+                            .setMessage("This cannot be undone")
+                            .setPositiveButton("Confirm", (dialogInterface, i) -> {
+                                termDAO.deleteTerm(localDataSet.get(position));
+                                localDataSet.remove(position);
+                                notifyItemRemoved(position);
+                            })
+                            .setNegativeButton("Cancel", ((dialogInterface, i) -> {
+                                dialogInterface.dismiss();
+                            }))
+                            .create();
+                deleteTermAlertDialog.show();
             }
         });
 
-        // Get element from your dataset at this position and replace the
+        // Get element from the dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getMyTextView().setText(localDataSet.get(position).termName);
+        viewHolder.getTextView().setText(localDataSet.get(position).termName);
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
+    // Return the size of the dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
         return localDataSet.size();

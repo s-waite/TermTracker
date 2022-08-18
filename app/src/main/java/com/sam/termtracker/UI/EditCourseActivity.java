@@ -1,6 +1,7 @@
 package com.sam.termtracker.UI;
 
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.Helper;
 import com.sam.termtracker.R;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -57,6 +59,21 @@ public class EditCourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_course);
 
+        final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (true) {
+                    Intent intent = new Intent(getApplicationContext(), TermInfoCourseViewActivity.class);
+                    intent.putExtra("termid", 5);
+                    startActivity(intent);
+
+                } else {
+                    setEnabled(false); //this is important line
+                }
+            }
+        };
+        this.getOnBackPressedDispatcher().addCallback(this, callback);
+
         // Get a reference to our DAO
         db = Database.getDatabase(getApplication());
         courseDAO = db.courseDAO();
@@ -70,7 +87,7 @@ public class EditCourseActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             course = loadCourseInfoIntoFields(extras);
-          termId = extras.getInt("termId");
+            termId = extras.getInt("termId");
             // this bool keeps track of whether we are editing or creating a new course
             newCourse = false;
             actionBar.setTitle("Edit Course");
@@ -126,6 +143,7 @@ public class EditCourseActivity extends AppCompatActivity {
                     } else {
                         formHasError = false;
                         startDateInputLayout.setError(null);
+                        endDateInputLayout.setError(null);
                     }
 
                 } catch (Exception e) {
@@ -157,6 +175,7 @@ public class EditCourseActivity extends AppCompatActivity {
                 } else {
                     formHasError = false;
                     endDateInputLayout.setError(null);
+                    startDateInput.setError(null);
                 }
             }
 
@@ -175,7 +194,7 @@ public class EditCourseActivity extends AppCompatActivity {
     private Course loadCourseInfoIntoFields(Bundle extras) {
         DateTimeFormatter formatter = Helper.formatter;
         int courseId = extras.getInt("courseId");
-         course = courseDAO.getCourseById(courseId);
+        course = courseDAO.getCourseById(courseId);
 
         LocalDateTime startDateTime = LocalDateTime.ofEpochSecond(course.startDate, 0, ZoneOffset.UTC);
         String startDate = formatter.format(startDateTime);
@@ -227,4 +246,11 @@ public class EditCourseActivity extends AppCompatActivity {
         Intent intent = new Intent(this, TermInfoCourseViewActivity.class);
         startActivity(intent);
     }
+
+//    @Override
+//    public void onBackInvoked() {
+//        intent intent = new intent(getapplicationcontext(), terminfocourseviewactivity.class);
+//        intent.putextra("termid", 5);
+//        startactivity(intent);
+//    }
 }

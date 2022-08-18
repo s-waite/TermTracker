@@ -1,6 +1,7 @@
 package com.sam.termtracker.UI;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -87,6 +88,7 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
         return new ViewHolder(view);
     }
 
+
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
@@ -99,6 +101,8 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
                 intent.putExtra("courseId", localDataSet.get(position).id);
                 intent.putExtra("termId", localDataSet.get(position).termId);
                 context.startActivity(intent);
+
+
             }
         });
 
@@ -106,10 +110,10 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
             @Override
             public void onClick(View view) {
                 AlertDialog myDialog = new MaterialAlertDialogBuilder(context)
-                        .setTitle("Delete This Term?")
+                        .setTitle("Delete This Course?")
                         .setMessage("This cannot be undone")
                         .setPositiveButton("Confirm", (dialogInterface, i) -> {
-//                            .deleteTerm(localDataSet.get(position));
+                            courseDAO.deleteCourse(localDataSet.get(position));
                             localDataSet.remove(position);
                             notifyItemRemoved(position);
                         })

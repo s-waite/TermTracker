@@ -13,6 +13,10 @@ public class MainActivity extends AppCompatActivity {
 
     MaterialButton enterButton;
 
+    /**
+     * The entry point for the app.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

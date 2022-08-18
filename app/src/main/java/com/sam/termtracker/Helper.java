@@ -3,15 +3,19 @@ package com.sam.termtracker;
 import android.util.Log;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.textfield.TextInputEditText;
+import com.sam.termtracker.UI.TermRecyclerAdapter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 public class Helper {
@@ -47,4 +51,10 @@ public class Helper {
         LocalDate date = LocalDate.parse(dateText, formatter);
         return (int) date.atStartOfDay().toEpochSecond(ZoneOffset.UTC);
     }
+
+    public static String epochToString(int timeStamp) {
+       LocalDateTime localDateTime = LocalDateTime.ofEpochSecond(timeStamp, 0, ZoneOffset.UTC);
+       return formatter.format(localDateTime);
+    }
+
 }

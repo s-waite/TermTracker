@@ -18,6 +18,7 @@ public abstract class Database extends RoomDatabase {
     public abstract CourseDAO courseDAO();
 
     private static volatile Database INSTANCE;
+    public Integer activeTerm;
 
     public static Database getDatabase(final Context context){
         if (INSTANCE == null) {
@@ -32,24 +33,5 @@ public abstract class Database extends RoomDatabase {
         }
         return INSTANCE;
     }
-//    public List<Term> getAllTerms() {
-//        return termDao().getAll();
-//    }
-//
-//    public void insertTerm(Term term) {
-//        termDao().insert(term);
-//    }
-//
-//    public void deleteTerm(Term term) {
-//        termDao().delete(term);
-//    }
-//
-//    public void updateTerm(Term term) {
-//        termDao().updateTerm(term);
-//    }
-//
-//    public Term getTermById(int id) {
-//        return termDao().getTermById(id);
-//    }
 }
 

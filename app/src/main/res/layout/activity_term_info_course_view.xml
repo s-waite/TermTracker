@@ -19,6 +19,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/TextAppearance.Material3.TitleLarge"
+                android:id="@+id/termInfoName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="04/03/1997" />
@@ -32,6 +33,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/TextAppearance.Material3.TitleLarge"
+                android:id="@+id/termInfoStartDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="04/03/1997" />
@@ -45,6 +47,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/TextAppearance.Material3.TitleLarge"
+                android:id="@+id/termInfoEndDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="04/03/1997" />
