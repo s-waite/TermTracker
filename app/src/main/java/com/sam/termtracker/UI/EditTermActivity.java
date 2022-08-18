@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -20,15 +21,19 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.DatePicker;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class EditTermActivity extends AppCompatActivity {
     TextInputEditText termNameInput;
     TextInputEditText startDateInput;
     TextInputEditText endDateInput;
+    TextInputLayout startDateInputLayout;
     TextInputLayout endDateInputLayout;
     Term term;
     Boolean newTerm;
@@ -41,10 +46,12 @@ public class EditTermActivity extends AppCompatActivity {
     int endDateInTimestamp;
     ActionBar actionBar;
     AlertDialog errorWithInputsDialog;
+    MaterialDatePicker<Long> datePicker;
 
 
     /**
      * Activity for creating and editing terms
+     *
      * @param savedInstanceState
      */
     @Override
@@ -57,8 +64,13 @@ public class EditTermActivity extends AppCompatActivity {
         termDAO = db.termDao();
 
         actionBar = getSupportActionBar();
-
         initializeViews();
+
+        // Create two date pickers that register confirmation listeners that change the supplied
+        // text input to the result of the date picker
+        startDatePicker = Helper.buildDatePicker(startDateInput);
+        endDatePicker = Helper.buildDatePicker(endDateInput);
+
 
         // Check if active term is null
         // If it is then we are creating a new term
@@ -72,6 +84,7 @@ public class EditTermActivity extends AppCompatActivity {
             newTerm = true;
             actionBar.setTitle("Add Term");
         }
+        initializeClickListeners();
     }
 
     /**
@@ -80,25 +93,50 @@ public class EditTermActivity extends AppCompatActivity {
     private void initializeViews() {
         termNameInput = findViewById(R.id.termName);
         startDateInput = findViewById(R.id.startDate);
+        startDateInputLayout = findViewById(R.id.startDateLayout);
         endDateInput = findViewById(R.id.endDate);
         endDateInputLayout = findViewById(R.id.endDateLayout);
+    }
 
-        // Use the Helper.changeDate() function to start a date picker
-        // The changeDate function returns a MaterialDatePicker that can be used on subsequent presses of the field
-        // This prevents creating a new MaterialDatePicker object every time
-        // Passes the classes date picker to the helper function
+    private void initializeClickListeners() {
         startDateInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startDatePicker = Helper.changeDate(startDatePicker, startDateInput, getSupportFragmentManager());
+                startDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
             }
         });
 
-        // Similar to the click listener of startDateInput
         endDateInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                endDatePicker = Helper.changeDate(endDatePicker, endDateInput, getSupportFragmentManager());
+                endDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
+            }
+        });
+
+        startDateInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                String test1 = startDateInput.getText().toString();
+                String test2 = endDateInput.getText().toString();
+                startDateInTimestamp = Helper.dateTextToEpoch(startDateInput.getText().toString());
+                if (startDateInTimestamp >= endDateInTimestamp) {
+                    startDateInputLayout.setError("Start date must be after end date");
+                    formHasError = true;
+                } else {
+                    formHasError = false;
+                    startDateInputLayout.setError(null);
+//                    endDateInputLayout.setError(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
 
@@ -111,7 +149,6 @@ public class EditTermActivity extends AppCompatActivity {
             // If it is not display an error
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                startDateInTimestamp = Helper.dateTextToEpoch(startDateInput.getText().toString());
                 endDateInTimestamp = Helper.dateTextToEpoch(endDateInput.getText().toString());
                 if (startDateInTimestamp >= endDateInTimestamp) {
                     endDateInputLayout.setError("End date must be after start date");
@@ -119,6 +156,7 @@ public class EditTermActivity extends AppCompatActivity {
                 } else {
                     formHasError = false;
                     endDateInputLayout.setError(null);
+                    startDateInputLayout.setError(null);
                 }
             }
 
@@ -130,6 +168,7 @@ public class EditTermActivity extends AppCompatActivity {
 
     /**
      * When editing a term, loads the info from the term into the edit form.
+     *
      * @param term the term to load data from
      */
     private void loadTermInfoIntoFields(Term term) {
@@ -146,11 +185,17 @@ public class EditTermActivity extends AppCompatActivity {
 
     /**
      * onClick method for the save FAB.
-     *
+     * <p>
      * Creates a new term object of updates an existing one
+     *
      * @param view
      */
     public void saveTerm(View view) {
+        // Check if term name is empty
+        if (termNameInput.getText().toString().isEmpty()) {
+            formHasError = true;
+        }
+
         if (formHasError) {
             // create an error dialog if one has not already been created
             if (errorWithInputsDialog == null) {

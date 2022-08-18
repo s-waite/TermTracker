@@ -114,7 +114,7 @@ public class EditCourseActivity extends AppCompatActivity {
         startDateInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startDatePicker = Helper.changeDate(startDatePicker, startDateInput, getSupportFragmentManager());
+//                startDatePicker = Helper.changeDate(startDatePicker, startDateInput, getSupportFragmentManager());
             }
         });
 
@@ -122,7 +122,7 @@ public class EditCourseActivity extends AppCompatActivity {
         endDateInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                endDatePicker = Helper.changeDate(endDatePicker, endDateInput, getSupportFragmentManager());
+//                endDatePicker = Helper.changeDate(endDatePicker, endDateInput, getSupportFragmentManager());
             }
         });
 
