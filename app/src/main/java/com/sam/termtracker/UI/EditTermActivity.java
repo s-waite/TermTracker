@@ -38,6 +38,7 @@ public class EditTermActivity extends AppCompatActivity {
     Term term;
     Boolean newTerm;
     Boolean formHasError;
+    Boolean otherDateFieldEmpty;
     Database db;
     TermDAO termDAO;
     MaterialDatePicker<Long> startDatePicker;
@@ -96,6 +97,13 @@ public class EditTermActivity extends AppCompatActivity {
         startDateInputLayout = findViewById(R.id.startDateLayout);
         endDateInput = findViewById(R.id.endDate);
         endDateInputLayout = findViewById(R.id.endDateLayout);
+        errorWithInputsDialog = new MaterialAlertDialogBuilder(this)
+                .setTitle("Error")
+                .setMessage("Please make sure all forms are filled out correctly")
+                .setPositiveButton("Dismiss", ((dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                }))
+                .create();
     }
 
     private void initializeClickListeners() {
@@ -121,16 +129,20 @@ public class EditTermActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                String test1 = startDateInput.getText().toString();
-                String test2 = endDateInput.getText().toString();
+                otherDateFieldEmpty = endDateInput.getText().toString().isEmpty();
                 startDateInTimestamp = Helper.dateTextToEpoch(startDateInput.getText().toString());
-                if (startDateInTimestamp >= endDateInTimestamp) {
-                    startDateInputLayout.setError("Start date must be after end date");
-                    formHasError = true;
-                } else {
-                    formHasError = false;
-                    startDateInputLayout.setError(null);
-//                    endDateInputLayout.setError(null);
+
+                if (!otherDateFieldEmpty) {
+                    endDateInTimestamp = Helper.dateTextToEpoch(endDateInput.getText().toString());
+
+                    if (startDateInTimestamp >= endDateInTimestamp) {
+                        startDateInputLayout.setError("Start date must be before end date");
+                        formHasError = true;
+                    } else {
+                        formHasError = false;
+                        startDateInputLayout.setError(null);
+                        endDateInputLayout.setError(null);
+                    }
                 }
             }
 
@@ -143,27 +155,34 @@ public class EditTermActivity extends AppCompatActivity {
         endDateInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
-            // Check if the end date entered is after the start date
-            // If it is not display an error
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                otherDateFieldEmpty = startDateInput.getText().toString().isEmpty();
                 endDateInTimestamp = Helper.dateTextToEpoch(endDateInput.getText().toString());
-                if (startDateInTimestamp >= endDateInTimestamp) {
-                    endDateInputLayout.setError("End date must be after start date");
-                    formHasError = true;
-                } else {
-                    formHasError = false;
-                    endDateInputLayout.setError(null);
-                    startDateInputLayout.setError(null);
+
+                if (!otherDateFieldEmpty) {
+                    startDateInTimestamp = Helper.dateTextToEpoch(startDateInput.getText().toString());
+
+                    if (startDateInTimestamp >= endDateInTimestamp) {
+                        endDateInputLayout.setError("End date must be after start date");
+                        formHasError = true;
+                    } else {
+                        formHasError = false;
+                        startDateInputLayout.setError(null);
+                        endDateInputLayout.setError(null);
+                    }
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+
             }
         });
+
     }
 
     /**
@@ -172,8 +191,6 @@ public class EditTermActivity extends AppCompatActivity {
      * @param term the term to load data from
      */
     private void loadTermInfoIntoFields(Term term) {
-        DateTimeFormatter formatter = Helper.formatter;
-
         String startDate = Helper.epochToString(term.startDate);
         String endDate = Helper.epochToString(term.endDate);
         String termName = term.termName;
@@ -194,19 +211,11 @@ public class EditTermActivity extends AppCompatActivity {
         // Check if term name is empty
         if (termNameInput.getText().toString().isEmpty()) {
             formHasError = true;
+        } else {
+            formHasError = false;
         }
 
         if (formHasError) {
-            // create an error dialog if one has not already been created
-            if (errorWithInputsDialog == null) {
-                errorWithInputsDialog = new MaterialAlertDialogBuilder(this)
-                        .setTitle("Error")
-                        .setMessage("Please make sure all forms are filled out correctly")
-                        .setPositiveButton("Dismiss", ((dialogInterface, i) -> {
-                            dialogInterface.dismiss();
-                        }))
-                        .create();
-            }
             errorWithInputsDialog.show();
             return;
         }
