@@ -19,6 +19,7 @@ public abstract class Database extends RoomDatabase {
 
     private static volatile Database INSTANCE;
     public Integer activeTerm;
+    public Integer activeCourse;
 
     public static Database getDatabase(final Context context){
         if (INSTANCE == null) {

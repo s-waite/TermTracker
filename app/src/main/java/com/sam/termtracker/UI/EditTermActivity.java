@@ -38,6 +38,7 @@ public class EditTermActivity extends AppCompatActivity {
     Term term;
     Boolean newTerm;
     Boolean formHasError;
+    Boolean nameHasError;
     Boolean otherDateFieldEmpty;
     Database db;
     TermDAO termDAO;
@@ -209,13 +210,14 @@ public class EditTermActivity extends AppCompatActivity {
      */
     public void saveTerm(View view) {
         // Check if term name is empty
+
         if (termNameInput.getText().toString().isEmpty()) {
-            formHasError = true;
+            nameHasError = true;
         } else {
-            formHasError = false;
+            nameHasError = false;
         }
 
-        if (formHasError) {
+        if (formHasError || nameHasError) {
             errorWithInputsDialog.show();
             return;
         }

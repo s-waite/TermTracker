@@ -73,7 +73,7 @@ public class TermInfoCourseViewActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), EditTermActivity.class);
+                Intent intent = new Intent(getApplicationContext(), EditCourseActivity.class);
                 startActivity(intent);
             }
         });

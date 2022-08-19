@@ -33,24 +33,26 @@ public class EditCourseActivity extends AppCompatActivity {
     TextInputEditText courseNameInput;
     TextInputEditText startDateInput;
     TextInputEditText endDateInput;
-    TextInputLayout endDateInputLayout;
     TextInputLayout startDateInputLayout;
+    TextInputLayout endDateInputLayout;
     Course course;
     Boolean newCourse;
     Boolean formHasError;
+    Boolean nameHasError;
+    Boolean otherDateFieldEmpty;
     Database db;
     CourseDAO courseDAO;
     MaterialDatePicker<Long> startDatePicker;
     MaterialDatePicker<Long> endDatePicker;
     int startDateInTimestamp;
     int endDateInTimestamp;
-    int termId;
     ActionBar actionBar;
     AlertDialog errorWithInputsDialog;
+    MaterialDatePicker<Long> datePicker;
 
 
     /**
-     * Activity for creating and editing courses
+     * Activity for creating and editing terms
      *
      * @param savedInstanceState
      */
@@ -59,42 +61,32 @@ public class EditCourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_course);
 
-        final OnBackPressedCallback callback = new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                if (true) {
-                    Intent intent = new Intent(getApplicationContext(), TermInfoCourseViewActivity.class);
-                    intent.putExtra("termid", 5);
-                    startActivity(intent);
-
-                } else {
-                    setEnabled(false); //this is important line
-                }
-            }
-        };
-        this.getOnBackPressedDispatcher().addCallback(this, callback);
-
-        // Get a reference to our DAO
+        // Get a reference to the DAO
         db = Database.getDatabase(getApplication());
         courseDAO = db.courseDAO();
 
         actionBar = getSupportActionBar();
-
         initializeViews();
 
-        // Check if any extras are passed. If they are, this activity is editing a course
-        // If not then we are creating a new course
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            course = loadCourseInfoIntoFields(extras);
-            termId = extras.getInt("termId");
-            // this bool keeps track of whether we are editing or creating a new course
+        // Create two date pickers that register confirmation listeners that change the supplied
+        // text input to the result of the date picker
+        startDatePicker = Helper.buildDatePicker(startDateInput);
+        endDatePicker = Helper.buildDatePicker(endDateInput);
+
+
+        // Check if active course is null
+        // If it is then we are creating a new course
+        if (db.activeCourse != null) {
+            course = courseDAO.getCourseById(db.activeCourse);
+            loadTermInfoIntoFields(course);
+            // this bool keeps track of whether we are editing or creating a new term
             newCourse = false;
             actionBar.setTitle("Edit Course");
         } else {
             newCourse = true;
             actionBar.setTitle("Add Course");
         }
+        initializeClickListeners();
     }
 
     /**
@@ -103,26 +95,30 @@ public class EditCourseActivity extends AppCompatActivity {
     private void initializeViews() {
         courseNameInput = findViewById(R.id.courseName);
         startDateInput = findViewById(R.id.startDateCourse);
+        startDateInputLayout = findViewById(R.id.startDateCourseLayout);
         endDateInput = findViewById(R.id.endDateCourse);
         endDateInputLayout = findViewById(R.id.endDateCourseLayout);
-        startDateInputLayout = findViewById(R.id.startDateCourseLayout);
+        errorWithInputsDialog = new MaterialAlertDialogBuilder(this)
+                .setTitle("Error")
+                .setMessage("Please make sure all forms are filled out correctly")
+                .setPositiveButton("Dismiss", ((dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                }))
+                .create();
+    }
 
-        // Use the Helper.changeDate() function to start a date picker
-        // The changeDate function returns a MaterialDatePicker that can be used on subsequent presses of the field
-        // This prevents creating a new MaterialDatePicker object every time
-        // Passes the classes date picker to the helper function
+    private void initializeClickListeners() {
         startDateInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startDatePicker = Helper.changeDate(startDatePicker, startDateInput, getSupportFragmentManager());
+                startDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
             }
         });
 
-        // Similar to the click listener of startDateInput
         endDateInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                endDatePicker = Helper.changeDate(endDatePicker, endDateInput, getSupportFragmentManager());
+                endDatePicker.show(getSupportFragmentManager(), "MATERIAL_DATE_PICKER");
             }
         });
 
@@ -134,9 +130,12 @@ public class EditCourseActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                try {
-                    startDateInTimestamp = Helper.dateTextToEpoch(startDateInput.getText().toString());
+                otherDateFieldEmpty = endDateInput.getText().toString().isEmpty();
+                startDateInTimestamp = Helper.dateTextToEpoch(startDateInput.getText().toString());
+
+                if (!otherDateFieldEmpty) {
                     endDateInTimestamp = Helper.dateTextToEpoch(endDateInput.getText().toString());
+
                     if (startDateInTimestamp >= endDateInTimestamp) {
                         startDateInputLayout.setError("Start date must be before end date");
                         formHasError = true;
@@ -145,9 +144,6 @@ public class EditCourseActivity extends AppCompatActivity {
                         startDateInputLayout.setError(null);
                         endDateInputLayout.setError(null);
                     }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
             }
 
@@ -160,74 +156,67 @@ public class EditCourseActivity extends AppCompatActivity {
         endDateInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
             }
 
-            // Check if the end date entered is after the start date
-            // If it is not display an error
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                startDateInTimestamp = Helper.dateTextToEpoch(startDateInput.getText().toString());
+                otherDateFieldEmpty = startDateInput.getText().toString().isEmpty();
                 endDateInTimestamp = Helper.dateTextToEpoch(endDateInput.getText().toString());
-                if (startDateInTimestamp >= endDateInTimestamp) {
-                    endDateInputLayout.setError("End date must be after start date");
-                    formHasError = true;
-                } else {
-                    formHasError = false;
-                    endDateInputLayout.setError(null);
-                    startDateInput.setError(null);
+
+                if (!otherDateFieldEmpty) {
+                    startDateInTimestamp = Helper.dateTextToEpoch(startDateInput.getText().toString());
+
+                    if (startDateInTimestamp >= endDateInTimestamp) {
+                        endDateInputLayout.setError("End date must be after start date");
+                        formHasError = true;
+                    } else {
+                        formHasError = false;
+                        startDateInputLayout.setError(null);
+                        endDateInputLayout.setError(null);
+                    }
                 }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+
             }
         });
+
     }
 
     /**
-     * When editing a course, loads the info from the course into the edit form.
+     * When editing a course, loads the info from the term into the edit form.
      *
-     * @param extras the data passed to the activity
-     * @return the course object that was passed as an extra from another activity to this
+     * @param course the course to load data from
      */
-    private Course loadCourseInfoIntoFields(Bundle extras) {
-        DateTimeFormatter formatter = Helper.formatter;
-        int courseId = extras.getInt("courseId");
-        course = courseDAO.getCourseById(courseId);
-
-        LocalDateTime startDateTime = LocalDateTime.ofEpochSecond(course.startDate, 0, ZoneOffset.UTC);
-        String startDate = formatter.format(startDateTime);
-        LocalDateTime endDateTime = LocalDateTime.ofEpochSecond(course.endDate, 0, ZoneOffset.UTC);
-        String endDate = formatter.format(endDateTime);
-
+    private void loadTermInfoIntoFields(Course course) {
+        String startDate = Helper.epochToString(course.startDate);
+        String endDate = Helper.epochToString(course.endDate);
         String courseName = course.name;
 
         courseNameInput.setText(courseName);
         startDateInput.setText(startDate);
         endDateInput.setText(endDate);
-        return course;
     }
 
     /**
      * onClick method for the save FAB.
      * <p>
-     * Creates a new course object of updates an existing one
+     * Creates a new term object of updates an existing one
      *
      * @param view
      */
     public void saveCourse(View view) {
-        if (formHasError) {
-            // create an error dialog if one has not already been created
-            if (errorWithInputsDialog == null) {
-                errorWithInputsDialog = new MaterialAlertDialogBuilder(this)
-                        .setTitle("Error")
-                        .setMessage("Please make sure all forms are filled out correctly")
-                        .setPositiveButton("Dismiss", ((dialogInterface, i) -> {
-                            dialogInterface.dismiss();
-                        }))
-                        .create();
-            }
+        // Check if term name is empty
+        if (courseNameInput.getText().toString().isEmpty()) {
+            nameHasError = true;
+        } else {
+            nameHasError = false;
+        }
+
+        if (formHasError || nameHasError) {
             errorWithInputsDialog.show();
             return;
         }
@@ -241,16 +230,14 @@ public class EditCourseActivity extends AppCompatActivity {
             course.endDate = endDateInTimestamp;
             courseDAO.updateCourse(course);
         } else {
-            courseDAO.insertCourse(new Course(courseNameInput.getText().toString(), startDateInTimestamp, endDateInTimestamp, termId));
+            courseDAO.insertCourse(new Course(courseNameInput.getText().toString(), startDateInTimestamp, endDateInTimestamp, db.activeTerm));
         }
+
+        // now that we are finished with the course we can set it as null so that it is not loaded
+        // into the add/edit course form when we want to add a new course
+        db.activeCourse = null;
         Intent intent = new Intent(this, TermInfoCourseViewActivity.class);
         startActivity(intent);
     }
 
-//    @Override
-//    public void onBackInvoked() {
-//        intent intent = new intent(getapplicationcontext(), terminfocourseviewactivity.class);
-//        intent.putextra("termid", 5);
-//        startactivity(intent);
-//    }
 }

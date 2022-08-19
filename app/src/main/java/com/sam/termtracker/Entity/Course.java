@@ -39,4 +39,12 @@ public class Course {
     @ColumnInfo(name = "termId")
     public int termId;
 
+    @ColumnInfo(name = "instructorName")
+    public String instructorName;
+
+    @ColumnInfo(name = "instructorPhone")
+    public String instructorPhone;
+
+    @ColumnInfo(name = "instructorEmail")
+    public String instructorEmail;
 }

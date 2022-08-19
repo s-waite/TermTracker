@@ -26,22 +26,24 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
     private List<Course> localDataSet;
     private Context context;
     private CourseDAO courseDAO;
+    private Database db;
 
     /**
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder).
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView myTextView;
+        private final TextView textView;
         private final ImageButton editButton;
         private final ImageButton deleteButton;
 
         public ViewHolder(View view) {
             super(view);
-            myTextView = (TextView) view.findViewById(R.id.itemTextView);
+            textView = (TextView) view.findViewById(R.id.itemTextView);
             editButton = view.findViewById(R.id.editButton);
             deleteButton = view.findViewById(R.id.deleteButton);
-            courseDAO = Database.getDatabase(context).courseDAO();
+            db = Database.getDatabase(context);
+            courseDAO = db.courseDAO();
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -53,15 +55,15 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
             });
         }
 
-        public TextView getMyTextView() {
-            return myTextView;
+        public TextView getTextView() {
+            return textView;
         }
 
-        public ImageButton getMyImageButton() {
+        public ImageButton getEditButton() {
             return editButton;
         }
 
-        public ImageButton getMyDeleteButton() {
+        public ImageButton getDeleteButton() {
             return deleteButton;
         }
     }
@@ -93,20 +95,22 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, @SuppressLint("RecyclerView") final int position) {
         // click listener for "edit" button
-        viewHolder.getMyImageButton().setOnClickListener(new View.OnClickListener() {
+        viewHolder.getEditButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EditCourseActivity.class);
-                // pass the term object as an extra
-                intent.putExtra("courseId", localDataSet.get(position).id);
-                intent.putExtra("termId", localDataSet.get(position).termId);
+                Course course = localDataSet.get(position);
+                // set the active course and term in the database
+                db.activeCourse = course.id;
+                db.activeTerm = course.termId;
+
                 context.startActivity(intent);
 
 
             }
         });
 
-        viewHolder.getMyDeleteButton().setOnClickListener(new View.OnClickListener() {
+        viewHolder.getDeleteButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 AlertDialog myDialog = new MaterialAlertDialogBuilder(context)
@@ -128,7 +132,7 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getMyTextView().setText(localDataSet.get(position).name);
+        viewHolder.getTextView().setText(localDataSet.get(position).name);
     }
 
     // Return the size of your dataset (invoked by the layout manager)
