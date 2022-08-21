@@ -49,6 +49,7 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    db.activeCourse = localDataSet.get(getAdapterPosition()).id;
                     Intent intent = new Intent(context, CourseInfoAssessmentViewActivity.class);
                     context.startActivity(intent);
 

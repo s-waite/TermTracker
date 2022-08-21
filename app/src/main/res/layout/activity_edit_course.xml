@@ -104,6 +104,25 @@ tools:context=".UI.EditCourseActivity">
             android:inputType="phone" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        app:errorEnabled="true"
+        android:layout_height="wrap_content"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_marginTop="2dp"
+        android:id="@+id/courseStatusLayout"
+        android:hint="Course Status">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/courseStatus"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:inputType="none"
+            app:simpleItems="@array/course_status"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
 </androidx.appcompat.widget.LinearLayoutCompat>
 
 

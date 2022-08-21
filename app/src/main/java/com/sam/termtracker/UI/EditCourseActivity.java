@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.sam.termtracker.DAO.CourseDAO;
@@ -39,6 +40,7 @@ public class EditCourseActivity extends AppCompatActivity {
     TextInputEditText instructorNameInput;
     TextInputEditText instructorEmailInput;
     TextInputEditText instructorPhoneInput;
+    MaterialAutoCompleteTextView courseStatusInput;
 
     TextInputLayout courseNameInputLayout;
     TextInputLayout startDateInputLayout;
@@ -46,6 +48,7 @@ public class EditCourseActivity extends AppCompatActivity {
     TextInputLayout instructorNameInputLayout;
     TextInputLayout instructorEmailInputLayout;
     TextInputLayout instructorPhoneInputLayout;
+    TextInputLayout courseStatusInputLayout;
 
     Pattern emailPattern;
     Pattern phonePattern;
@@ -55,6 +58,7 @@ public class EditCourseActivity extends AppCompatActivity {
     Boolean validInstructorName;
     Boolean validInstructorEmail;
     Boolean validInstructorPhone;
+    Boolean validCourseStatus;
 
     Course course;
     Boolean newCourse;
@@ -122,6 +126,7 @@ public class EditCourseActivity extends AppCompatActivity {
         instructorNameInput = findViewById(R.id.instructorName);
         instructorEmailInput = findViewById(R.id.instructorEmail);
         instructorPhoneInput = findViewById(R.id.instructorPhone);
+        courseStatusInput = findViewById(R.id.courseStatus);
 
         courseNameInputLayout = findViewById(R.id.courseNameLayout);
         startDateInputLayout = findViewById(R.id.startDateCourseLayout);
@@ -129,6 +134,7 @@ public class EditCourseActivity extends AppCompatActivity {
         instructorNameInputLayout = findViewById(R.id.instructorNameLayout);
         instructorEmailInputLayout = findViewById(R.id.instructorEmailLayout);
         instructorPhoneInputLayout = findViewById(R.id.instructorPhoneLayout);
+        courseStatusInputLayout = findViewById(R.id.courseStatusLayout);
 
 
         errorWithInputsDialog = new MaterialAlertDialogBuilder(this)
@@ -252,12 +258,13 @@ public class EditCourseActivity extends AppCompatActivity {
                 endDateInputLayout,
                 instructorNameInputLayout,
                 instructorEmailInputLayout,
-                instructorPhoneInputLayout
+                instructorPhoneInputLayout,
+                courseStatusInputLayout
         };
 
-       for (TextInputLayout layout : textInputLayouts) {
-           layout.setError(null);
-       }
+        for (TextInputLayout layout : textInputLayouts) {
+            layout.setError(null);
+        }
     }
 
     private Boolean formHasErrors() {
@@ -285,12 +292,18 @@ public class EditCourseActivity extends AppCompatActivity {
             instructorPhoneInputLayout.setError("Please enter a valid number in the form: 123-456-7890");
         }
 
+        validCourseStatus = !(courseStatusInput.getText().toString().isEmpty());
+        if (!validCourseStatus) {
+            courseStatusInputLayout.setError("Please select the course status");
+        }
+
         return (validName &&
                 validStartDate &&
                 validEndDate &&
                 validInstructorName &&
                 validInstructorEmail &&
-                validInstructorPhone
+                validInstructorPhone &&
+                validCourseStatus
         );
     }
 
@@ -306,6 +319,7 @@ public class EditCourseActivity extends AppCompatActivity {
         String instructorName = course.instructorName;
         String instructorEmail = course.instructorEmail;
         String instructorPhone = course.instructorPhone;
+        String courseStatus = course.courseStatus;
 
         courseNameInput.setText(courseName);
         startDateInput.setText(startDate);
@@ -313,10 +327,11 @@ public class EditCourseActivity extends AppCompatActivity {
         instructorNameInput.setText(instructorName);
         instructorEmailInput.setText(instructorEmail);
         instructorPhoneInput.setText(instructorPhone);
+        courseStatusInput.setText(courseStatus, false);
     }
 
     /**
-     * onClick method for the save FAB.
+     * * onClick method for the save FAB.
      * <p>
      * Creates a new term object of updates an existing one
      *
@@ -340,6 +355,7 @@ public class EditCourseActivity extends AppCompatActivity {
             course.instructorName = instructorNameInput.getText().toString();
             course.instructorEmail = instructorEmailInput.getText().toString();
             course.instructorPhone = instructorPhoneInput.getText().toString();
+            course.courseStatus = courseStatusInput.getText().toString();
             courseDAO.updateCourse(course);
         } else {
             courseDAO.insertCourse(new Course(
@@ -349,7 +365,9 @@ public class EditCourseActivity extends AppCompatActivity {
                     db.activeTerm,
                     instructorNameInput.getText().toString(),
                     instructorEmailInput.getText().toString(),
-                    instructorPhoneInput.getText().toString()));
+                    instructorPhoneInput.getText().toString(),
+                    courseStatusInput.getText().toString()
+                    ));
         }
 
         // now that we are finished with the course we can set it as null so that it is not loaded

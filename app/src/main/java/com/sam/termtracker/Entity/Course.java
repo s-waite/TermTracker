@@ -17,7 +17,7 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, int startDate, int endDate, int termId, String instructorName, String instructorEmail, String instructorPhone) {
+    public Course(String name, int startDate, int endDate, int termId, String instructorName, String instructorEmail, String instructorPhone, String courseStatus) {
        this.name = name;
        this.startDate = startDate;
        this.endDate = endDate;
@@ -25,6 +25,7 @@ public class Course {
        this.instructorName = instructorName;
        this.instructorEmail = instructorEmail;
        this.instructorPhone = instructorPhone;
+       this.courseStatus = courseStatus;
     }
 
     @PrimaryKey(autoGenerate = true)
@@ -50,4 +51,7 @@ public class Course {
 
     @ColumnInfo(name = "instructorEmail")
     public String instructorEmail;
+
+    @ColumnInfo(name = "courseStatus")
+    public String courseStatus;
 }
