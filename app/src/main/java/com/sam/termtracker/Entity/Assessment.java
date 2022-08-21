@@ -7,17 +7,17 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "assessments")
 public class Assessment {
 
-    Assessment(String name, int courseId) {
+    public Assessment(String name, int courseId) {
         this.name = name;
         this.courseId = courseId;
     }
 
     @PrimaryKey(autoGenerate = true)
-    int id;
+    public int id;
 
     @ColumnInfo(name = "name")
-    String name;
+    public String name;
 
     @ColumnInfo(name = "courseId")
-    int courseId;
+    public int courseId;
 }
