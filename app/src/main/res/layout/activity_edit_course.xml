@@ -72,7 +72,6 @@ tools:context=".UI.EditCourseActivity">
             android:id="@+id/instructorName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusableInTouchMode="false"
             android:inputType="textPersonName" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -88,8 +87,7 @@ tools:context=".UI.EditCourseActivity">
             android:id="@+id/instructorEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusableInTouchMode="false"
-            android:inputType="datetime" />
+            android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -103,7 +101,6 @@ tools:context=".UI.EditCourseActivity">
             android:id="@+id/instructorPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:focusableInTouchMode="false"
             android:inputType="phone" />
     </com.google.android.material.textfield.TextInputLayout>
 

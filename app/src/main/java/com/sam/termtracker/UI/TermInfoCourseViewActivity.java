@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -19,6 +18,7 @@ import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.Helper;
 import com.sam.termtracker.R;
 import com.sam.termtracker.DAO.CourseDAO;
+import com.sam.termtracker.UI.recyclerAdapter.CourseRecyclerAdapter;
 
 import java.util.List;
 
@@ -46,6 +46,7 @@ public class TermInfoCourseViewActivity extends AppCompatActivity {
         Database db = Database.getDatabase(getApplication());
         courseDao = db.courseDAO();
         termDAO = db.termDao();
+        db.activeCourse = null;
 
 //        courseDao.insertCourse(new Course("One", 10000, 10000, 1));
 

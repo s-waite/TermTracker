@@ -6,6 +6,9 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -37,15 +40,24 @@ public class EditCourseActivity extends AppCompatActivity {
     TextInputEditText instructorEmailInput;
     TextInputEditText instructorPhoneInput;
 
+    TextInputLayout courseNameInputLayout;
     TextInputLayout startDateInputLayout;
     TextInputLayout endDateInputLayout;
     TextInputLayout instructorNameInputLayout;
     TextInputLayout instructorEmailInputLayout;
     TextInputLayout instructorPhoneInputLayout;
+
+    Pattern emailPattern;
+    Pattern phonePattern;
+    Boolean validName;
+    Boolean validStartDate;
+    Boolean validEndDate;
+    Boolean validInstructorName;
+    Boolean validInstructorEmail;
+    Boolean validInstructorPhone;
+
     Course course;
     Boolean newCourse;
-    Boolean formHasError;
-    Boolean nameHasError;
     Boolean otherDateFieldEmpty;
     Database db;
     CourseDAO courseDAO;
@@ -68,6 +80,11 @@ public class EditCourseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_course);
 
+        emailPattern = Pattern.compile("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$", Pattern.CASE_INSENSITIVE);
+        phonePattern = Pattern.compile("[0-9]{3}-[0-9]{3}-[0-9]{4}");
+        validStartDate = false;
+        validEndDate = false;
+
         // Get a reference to the DAO
         db = Database.getDatabase(getApplication());
         courseDAO = db.courseDAO();
@@ -79,7 +96,6 @@ public class EditCourseActivity extends AppCompatActivity {
         // text input to the result of the date picker
         startDatePicker = Helper.buildDatePicker(startDateInput);
         endDatePicker = Helper.buildDatePicker(endDateInput);
-
 
         // Check if active course is null
         // If it is then we are creating a new course
@@ -107,7 +123,7 @@ public class EditCourseActivity extends AppCompatActivity {
         instructorEmailInput = findViewById(R.id.instructorEmail);
         instructorPhoneInput = findViewById(R.id.instructorPhone);
 
-
+        courseNameInputLayout = findViewById(R.id.courseNameLayout);
         startDateInputLayout = findViewById(R.id.startDateCourseLayout);
         endDateInputLayout = findViewById(R.id.endDateCourseLayout);
         instructorNameInputLayout = findViewById(R.id.instructorNameLayout);
@@ -154,9 +170,9 @@ public class EditCourseActivity extends AppCompatActivity {
 
                     if (startDateInTimestamp >= endDateInTimestamp) {
                         startDateInputLayout.setError("Start date must be before end date");
-                        formHasError = true;
+                        validStartDate = true;
                     } else {
-                        formHasError = false;
+                        validStartDate = false;
                         startDateInputLayout.setError(null);
                         endDateInputLayout.setError(null);
                     }
@@ -183,9 +199,9 @@ public class EditCourseActivity extends AppCompatActivity {
 
                     if (startDateInTimestamp >= endDateInTimestamp) {
                         endDateInputLayout.setError("End date must be after start date");
-                        formHasError = true;
+                        validEndDate = true;
                     } else {
-                        formHasError = false;
+                        validEndDate = false;
                         startDateInputLayout.setError(null);
                         endDateInputLayout.setError(null);
                     }
@@ -196,10 +212,86 @@ public class EditCourseActivity extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
             }
         });
+
+        instructorEmailInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (!hasFocus) {
+                    validInstructorEmail = emailPattern.matcher(instructorEmailInput.getText().toString()).find();
+                    if (!validInstructorEmail) {
+                        instructorEmailInputLayout.setError("Please enter a valid email");
+                    } else {
+                        instructorEmailInputLayout.setError(null);
+                    }
+                }
+            }
+        });
+
+        instructorPhoneInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (!hasFocus) {
+                    validInstructorPhone = phonePattern.matcher(instructorPhoneInput.getText().toString()).find();
+                    if (!validInstructorPhone) {
+                        instructorPhoneInputLayout.setError("Please enter a valid number in the form: 123-456-7890");
+
+                    } else {
+                        instructorPhoneInputLayout.setError(null);
+                    }
+                }
+            }
+        });
+
+
     }
 
-    private Boolean checkForErrors() {
-        return true;
+    private void clearFormErrors() {
+        TextInputLayout[] textInputLayouts = {
+                courseNameInputLayout,
+                startDateInputLayout,
+                endDateInputLayout,
+                instructorNameInputLayout,
+                instructorEmailInputLayout,
+                instructorPhoneInputLayout
+        };
+
+       for (TextInputLayout layout : textInputLayouts) {
+           layout.setError(null);
+       }
+    }
+
+    private Boolean formHasErrors() {
+        validName = !(courseNameInput.getText().toString().isEmpty());
+        if (!validName) {
+            courseNameInputLayout.setError("Please enter the course name");
+        }
+
+        validStartDate = Helper.dateTextToEpoch(startDateInput.getText().toString()) < Helper.dateTextToEpoch(endDateInput.getText().toString());
+
+        validEndDate = validStartDate;
+
+        validInstructorName = !(instructorNameInput.getText().toString().isEmpty());
+        if (!validInstructorName) {
+            instructorNameInputLayout.setError("Please enter the instructors name");
+        }
+
+        validInstructorEmail = emailPattern.matcher(instructorEmailInput.getText().toString()).find();
+        if (!validInstructorEmail) {
+            instructorEmailInputLayout.setError("Please enter a valid email");
+        }
+
+        validInstructorPhone = phonePattern.matcher(instructorPhoneInput.getText().toString()).find();
+        if (!validInstructorPhone) {
+            instructorPhoneInputLayout.setError("Please enter a valid number in the form: 123-456-7890");
+        }
+
+        return (validName &&
+                validStartDate &&
+                validEndDate &&
+                validInstructorName &&
+                validInstructorEmail &&
+                validInstructorPhone
+        );
     }
 
     /**
@@ -231,20 +323,13 @@ public class EditCourseActivity extends AppCompatActivity {
      * @param view
      */
     public void saveCourse(View view) {
-        // Check if term name is empty
-        if (courseNameInput.getText().toString().isEmpty()) {
-            nameHasError = true;
-        } else {
-            nameHasError = false;
-        }
+        // Clear errors from previous save attempts
+        clearFormErrors();
 
-        if (formHasError || nameHasError) {
+        if (!formHasErrors()) {
             errorWithInputsDialog.show();
             return;
         }
-
-        formHasError = checkForErrors();
-
         startDateInTimestamp = Helper.dateTextToEpoch(startDateInput.getText().toString());
         endDateInTimestamp = Helper.dateTextToEpoch(endDateInput.getText().toString());
 
@@ -273,5 +358,4 @@ public class EditCourseActivity extends AppCompatActivity {
         Intent intent = new Intent(this, TermInfoCourseViewActivity.class);
         startActivity(intent);
     }
-
 }

@@ -8,17 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sam.termtracker.DAO.TermDAO;
 import com.sam.termtracker.Database.Database;
 import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.R;
+import com.sam.termtracker.UI.recyclerAdapter.TermRecyclerAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TermViewActivity extends AppCompatActivity {
