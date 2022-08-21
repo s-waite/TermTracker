@@ -142,7 +142,6 @@ public class EditCourseActivity extends AppCompatActivity {
         startDateInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -166,14 +165,12 @@ public class EditCourseActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
 
         endDateInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
@@ -197,10 +194,12 @@ public class EditCourseActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-
             }
         });
+    }
 
+    private Boolean checkForErrors() {
+        return true;
     }
 
     /**
@@ -212,10 +211,16 @@ public class EditCourseActivity extends AppCompatActivity {
         String startDate = Helper.epochToString(course.startDate);
         String endDate = Helper.epochToString(course.endDate);
         String courseName = course.name;
+        String instructorName = course.instructorName;
+        String instructorEmail = course.instructorEmail;
+        String instructorPhone = course.instructorPhone;
 
         courseNameInput.setText(courseName);
         startDateInput.setText(startDate);
         endDateInput.setText(endDate);
+        instructorNameInput.setText(instructorName);
+        instructorEmailInput.setText(instructorEmail);
+        instructorPhoneInput.setText(instructorPhone);
     }
 
     /**
@@ -238,6 +243,8 @@ public class EditCourseActivity extends AppCompatActivity {
             return;
         }
 
+        formHasError = checkForErrors();
+
         startDateInTimestamp = Helper.dateTextToEpoch(startDateInput.getText().toString());
         endDateInTimestamp = Helper.dateTextToEpoch(endDateInput.getText().toString());
 
@@ -245,9 +252,19 @@ public class EditCourseActivity extends AppCompatActivity {
             course.name = courseNameInput.getText().toString();
             course.startDate = startDateInTimestamp;
             course.endDate = endDateInTimestamp;
+            course.instructorName = instructorNameInput.getText().toString();
+            course.instructorEmail = instructorEmailInput.getText().toString();
+            course.instructorPhone = instructorPhoneInput.getText().toString();
             courseDAO.updateCourse(course);
         } else {
-            courseDAO.insertCourse(new Course(courseNameInput.getText().toString(), startDateInTimestamp, endDateInTimestamp, db.activeTerm));
+            courseDAO.insertCourse(new Course(
+                    courseNameInput.getText().toString(),
+                    startDateInTimestamp,
+                    endDateInTimestamp,
+                    db.activeTerm,
+                    instructorNameInput.getText().toString(),
+                    instructorEmailInput.getText().toString(),
+                    instructorPhoneInput.getText().toString()));
         }
 
         // now that we are finished with the course we can set it as null so that it is not loaded

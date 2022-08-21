@@ -17,11 +17,14 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, int startDate, int endDate, int termId) {
+    public Course(String name, int startDate, int endDate, int termId, String instructorName, String instructorEmail, String instructorPhone) {
        this.name = name;
        this.startDate = startDate;
        this.endDate = endDate;
        this.termId = termId;
+       this.instructorName = instructorName;
+       this.instructorEmail = instructorEmail;
+       this.instructorPhone = instructorPhone;
     }
 
     @PrimaryKey(autoGenerate = true)

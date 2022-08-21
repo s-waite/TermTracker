@@ -205,6 +205,7 @@ public class EditTermActivity extends AppCompatActivity {
         endDateInput.setText(endDate);
     }
 
+
     /**
      * onClick method for the save FAB.
      * <p>
