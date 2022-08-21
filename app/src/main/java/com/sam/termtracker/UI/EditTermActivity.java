@@ -33,8 +33,10 @@ public class EditTermActivity extends AppCompatActivity {
     TextInputEditText termNameInput;
     TextInputEditText startDateInput;
     TextInputEditText endDateInput;
+
     TextInputLayout startDateInputLayout;
     TextInputLayout endDateInputLayout;
+
     Term term;
     Boolean newTerm;
     Boolean formHasError;
@@ -95,9 +97,11 @@ public class EditTermActivity extends AppCompatActivity {
     private void initializeViews() {
         termNameInput = findViewById(R.id.termName);
         startDateInput = findViewById(R.id.startDate);
-        startDateInputLayout = findViewById(R.id.startDateLayout);
         endDateInput = findViewById(R.id.endDate);
+
+        startDateInputLayout = findViewById(R.id.startDateLayout);
         endDateInputLayout = findViewById(R.id.endDateLayout);
+
         errorWithInputsDialog = new MaterialAlertDialogBuilder(this)
                 .setTitle("Error")
                 .setMessage("Please make sure all forms are filled out correctly")

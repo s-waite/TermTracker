@@ -15,6 +15,7 @@ tools:context=".UI.EditCourseActivity">
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:errorEnabled="true"
         android:id="@+id/courseNameLayout"
         android:hint="Course Name">
 
@@ -29,8 +30,9 @@ tools:context=".UI.EditCourseActivity">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
+        app:errorEnabled="true"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="2dp"
         android:id="@+id/startDateCourseLayout"
         android:hint="Start Date">
 
@@ -58,6 +60,52 @@ tools:context=".UI.EditCourseActivity">
             android:inputType="datetime" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        app:errorEnabled="true"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:id="@+id/instructorNameLayout"
+        android:hint="Instructor Name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/instructorName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"
+            android:inputType="textPersonName" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        app:errorEnabled="true"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:id="@+id/instructorEmailLayout"
+        android:hint="Instructor Email">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/instructorEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"
+            android:inputType="datetime" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        app:errorEnabled="true"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:id="@+id/instructorPhoneLayout"
+        android:hint="Instructor Phone">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/instructorPhone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusableInTouchMode="false"
+            android:inputType="phone" />
+    </com.google.android.material.textfield.TextInputLayout>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
 

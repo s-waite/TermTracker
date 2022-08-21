@@ -33,8 +33,15 @@ public class EditCourseActivity extends AppCompatActivity {
     TextInputEditText courseNameInput;
     TextInputEditText startDateInput;
     TextInputEditText endDateInput;
+    TextInputEditText instructorNameInput;
+    TextInputEditText instructorEmailInput;
+    TextInputEditText instructorPhoneInput;
+
     TextInputLayout startDateInputLayout;
     TextInputLayout endDateInputLayout;
+    TextInputLayout instructorNameInputLayout;
+    TextInputLayout instructorEmailInputLayout;
+    TextInputLayout instructorPhoneInputLayout;
     Course course;
     Boolean newCourse;
     Boolean formHasError;
@@ -94,10 +101,20 @@ public class EditCourseActivity extends AppCompatActivity {
      */
     private void initializeViews() {
         courseNameInput = findViewById(R.id.courseName);
-        startDateInput = findViewById(R.id.startDateCourse);
-        startDateInputLayout = findViewById(R.id.startDateCourseLayout);
         endDateInput = findViewById(R.id.endDateCourse);
+        startDateInput = findViewById(R.id.startDateCourse);
+        instructorNameInput = findViewById(R.id.instructorName);
+        instructorEmailInput = findViewById(R.id.instructorEmail);
+        instructorPhoneInput = findViewById(R.id.instructorPhone);
+
+
+        startDateInputLayout = findViewById(R.id.startDateCourseLayout);
         endDateInputLayout = findViewById(R.id.endDateCourseLayout);
+        instructorNameInputLayout = findViewById(R.id.instructorNameLayout);
+        instructorEmailInputLayout = findViewById(R.id.instructorEmailLayout);
+        instructorPhoneInputLayout = findViewById(R.id.instructorPhoneLayout);
+
+
         errorWithInputsDialog = new MaterialAlertDialogBuilder(this)
                 .setTitle("Error")
                 .setMessage("Please make sure all forms are filled out correctly")
