@@ -7,7 +7,8 @@
         <entry key="app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_course_info_assessment_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_course_view.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/activity_edit_course.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_edit_assessment.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_edit_course.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_edit_term.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_term_info_course_view.xml" value="0.25" />
@@ -16,6 +17,7 @@
         <entry key="app/src/main/res/layout/list_item.xml" value="0.375" />
         <entry key="app/src/main/res/layout/list_item_assessment.xml" value="0.25769927536231885" />
         <entry key="app/src/main/res/layout/list_item_course.xml" value="0.15081521739130435" />
+        <entry key="app/src/main/res/layout/list_item_note.xml" value="0.25769927536231885" />
         <entry key="app/src/main/res/layout/sample_title_with_label_view.xml" value="0.25" />
       </map>
     </option>

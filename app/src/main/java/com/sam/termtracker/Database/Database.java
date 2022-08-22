@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase;
 
 import com.sam.termtracker.DAO.AssessmentDAO;
 import com.sam.termtracker.DAO.CourseDAO;
+import com.sam.termtracker.DAO.NoteDAO;
 import com.sam.termtracker.Entity.Assessment;
 import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.Entity.Course;
@@ -19,6 +20,7 @@ public abstract class Database extends RoomDatabase {
     public abstract TermDAO termDao();
     public abstract CourseDAO courseDAO();
     public abstract AssessmentDAO assessmentDAO();
+    public abstract NoteDAO noteDAO();
 
     private static volatile Database INSTANCE;
     public Integer activeTerm;

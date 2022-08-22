@@ -14,21 +14,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sam.termtracker.DAO.AssessmentDAO;
-import com.sam.termtracker.DAO.CourseDAO;
+import com.sam.termtracker.DAO.NoteDAO;
 import com.sam.termtracker.Database.Database;
 import com.sam.termtracker.Entity.Assessment;
-import com.sam.termtracker.Entity.Course;
+import com.sam.termtracker.Entity.Note;
 import com.sam.termtracker.R;
-import com.sam.termtracker.UI.CourseInfoAssessmentViewActivity;
 import com.sam.termtracker.UI.EditCourseActivity;
 
 import java.util.List;
 
 
-public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRecyclerAdapter.ViewHolder> {
-    private List<Assessment> localDataSet;
+public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapter.ViewHolder> {
+    private List<Note> localDataSet;
     private Context context;
-    private AssessmentDAO assessmentDAO;
+    private NoteDAO noteDAO;
     private Database db;
 
     /**
@@ -36,21 +35,27 @@ public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRe
      * (custom ViewHolder).
      */
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
+        private final TextView titleView;
+        private final TextView contentView;
         private final ImageButton editButton;
         private final ImageButton deleteButton;
 
         public ViewHolder(View view) {
             super(view);
-            textView = (TextView) view.findViewById(R.id.itemTextView);
+            titleView = (TextView) view.findViewById(R.id.itemTextView);
+            contentView = view.findViewById(R.id.content);
             editButton = view.findViewById(R.id.editButton);
             deleteButton = view.findViewById(R.id.deleteButton);
             db = Database.getDatabase(context);
-            assessmentDAO = db.assessmentDAO();
+            noteDAO = db.noteDAO();
         }
 
-        public TextView getTextView() {
-            return textView;
+        public TextView getTitleView() {
+            return titleView;
+        }
+
+        public TextView getContentView() {
+           return contentView;
         }
 
         public ImageButton getEditButton() {
@@ -68,7 +73,7 @@ public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRe
      * @param dataSet String[] containing the data to populate views to be used
      *                by RecyclerView.
      */
-    public AssessmentRecyclerAdapter(List<Assessment> dataSet, Context context) {
+    public NoteRecyclerAdapter(List<Note> dataSet, Context context) {
         localDataSet = dataSet;
         this.context = context;
     }
@@ -79,8 +84,6 @@ public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRe
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.list_item_assessment, viewGroup, false);
-
-
         return new ViewHolder(view);
     }
 
@@ -93,7 +96,7 @@ public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRe
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EditCourseActivity.class);
-                intent.putExtra("name", localDataSet.get(position).name);
+                intent.putExtra("name", localDataSet.get(position).title);
                 context.startActivity(intent);
             }
         });
@@ -105,7 +108,7 @@ public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRe
                         .setTitle("Delete This Course?")
                         .setMessage("This cannot be undone")
                         .setPositiveButton("Confirm", (dialogInterface, i) -> {
-                            assessmentDAO.deleteAssessment(localDataSet.get(position));
+                            noteDAO.deleteNote(localDataSet.get(position));
                             localDataSet.remove(position);
                             notifyItemRemoved(position);
                         })
@@ -120,7 +123,8 @@ public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRe
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        viewHolder.getTextView().setText(localDataSet.get(position).name);
+        viewHolder.getTitleView().setText(localDataSet.get(position).title);
+        viewHolder.getContentView().setText(localDataSet.get(position).content);
     }
 
     // Return the size of your dataset (invoked by the layout manager)

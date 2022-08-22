@@ -14,7 +14,8 @@
         android:theme="@style/Theme.TermTracker"
         tools:targetApi="31">
         <activity
-            android:name=".EditAssessmentActivity"
+            android:name=".UI.EditAssessmentActivity"
+            android:parentActivityName=".UI.CourseInfoAssessmentViewActivity"
             android:exported="false" />
         <activity
             android:name=".UI.EditCourseActivity"
