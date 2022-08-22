@@ -17,7 +17,7 @@ import com.sam.termtracker.DAO.TermDAO;
 import com.sam.termtracker.Database.Database;
 import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.R;
-import com.sam.termtracker.UI.EditTermActivity;
+import com.sam.termtracker.UI.form.EditTermActivity;
 import com.sam.termtracker.UI.TermInfoCourseViewActivity;
 
 import java.util.List;

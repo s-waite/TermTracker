@@ -9,13 +9,14 @@ import com.sam.termtracker.DAO.AssessmentDAO;
 import com.sam.termtracker.DAO.CourseDAO;
 import com.sam.termtracker.DAO.NoteDAO;
 import com.sam.termtracker.Entity.Assessment;
+import com.sam.termtracker.Entity.Note;
 import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.Entity.Course;
 import com.sam.termtracker.DAO.TermDAO;
 
 import java.util.List;
 
-@androidx.room.Database(entities = {Term.class, Course.class, Assessment.class}, version = 1, exportSchema = false)
+@androidx.room.Database(entities = {Term.class, Course.class, Assessment.class, Note.class}, version = 1, exportSchema = false)
 public abstract class Database extends RoomDatabase {
     public abstract TermDAO termDao();
     public abstract CourseDAO courseDAO();

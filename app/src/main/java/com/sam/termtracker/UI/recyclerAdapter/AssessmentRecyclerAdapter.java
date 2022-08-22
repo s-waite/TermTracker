@@ -14,13 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.sam.termtracker.DAO.AssessmentDAO;
-import com.sam.termtracker.DAO.CourseDAO;
 import com.sam.termtracker.Database.Database;
 import com.sam.termtracker.Entity.Assessment;
-import com.sam.termtracker.Entity.Course;
 import com.sam.termtracker.R;
-import com.sam.termtracker.UI.CourseInfoAssessmentViewActivity;
-import com.sam.termtracker.UI.EditCourseActivity;
+import com.sam.termtracker.UI.form.EditAssessmentActivity;
+import com.sam.termtracker.UI.form.EditCourseActivity;
 
 import java.util.List;
 
@@ -92,8 +90,8 @@ public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRe
         viewHolder.getEditButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, EditCourseActivity.class);
-                intent.putExtra("name", localDataSet.get(position).name);
+                Intent intent = new Intent(context, EditAssessmentActivity.class);
+                intent.putExtra("id", localDataSet.get(position).id);
                 context.startActivity(intent);
             }
         });

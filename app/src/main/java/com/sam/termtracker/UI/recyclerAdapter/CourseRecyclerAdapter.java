@@ -18,7 +18,7 @@ import com.sam.termtracker.Database.Database;
 import com.sam.termtracker.Entity.Course;
 import com.sam.termtracker.R;
 import com.sam.termtracker.UI.CourseInfoAssessmentViewActivity;
-import com.sam.termtracker.UI.EditCourseActivity;
+import com.sam.termtracker.UI.form.EditCourseActivity;
 
 import java.util.List;
 

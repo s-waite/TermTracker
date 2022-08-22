@@ -18,6 +18,7 @@ import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.Helper;
 import com.sam.termtracker.R;
 import com.sam.termtracker.DAO.CourseDAO;
+import com.sam.termtracker.UI.form.EditCourseActivity;
 import com.sam.termtracker.UI.recyclerAdapter.CourseRecyclerAdapter;
 
 import java.util.List;

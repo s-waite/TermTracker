@@ -1,4 +1,4 @@
-package com.sam.termtracker.UI;
+package com.sam.termtracker.UI.form;
 
 
 import androidx.appcompat.app.ActionBar;
@@ -15,6 +15,7 @@ import com.sam.termtracker.Database.Database;
 import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.Helper;
 import com.sam.termtracker.R;
+import com.sam.termtracker.UI.TermViewActivity;
 
 import android.content.Intent;
 import android.os.Bundle;

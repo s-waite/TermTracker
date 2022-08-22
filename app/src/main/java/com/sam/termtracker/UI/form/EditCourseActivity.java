@@ -1,4 +1,4 @@
-package com.sam.termtracker.UI;
+package com.sam.termtracker.UI.form;
 
 
 import androidx.activity.OnBackPressedCallback;
@@ -21,6 +21,7 @@ import com.sam.termtracker.Entity.Course;
 import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.Helper;
 import com.sam.termtracker.R;
+import com.sam.termtracker.UI.TermInfoCourseViewActivity;
 
 import android.app.Activity;
 import android.content.Intent;

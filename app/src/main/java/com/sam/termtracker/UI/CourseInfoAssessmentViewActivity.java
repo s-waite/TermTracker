@@ -5,17 +5,20 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.sam.termtracker.DAO.AssessmentDAO;
 import com.sam.termtracker.DAO.CourseDAO;
+import com.sam.termtracker.DAO.NoteDAO;
 import com.sam.termtracker.Database.Database;
 import com.sam.termtracker.Entity.Assessment;
 import com.sam.termtracker.Entity.Course;
+import com.sam.termtracker.Entity.Note;
 import com.sam.termtracker.Helper;
 import com.sam.termtracker.R;
+import com.sam.termtracker.UI.form.EditAssessmentActivity;
 import com.sam.termtracker.UI.recyclerAdapter.AssessmentRecyclerAdapter;
-import com.sam.termtracker.UI.recyclerAdapter.CourseRecyclerAdapter;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -31,6 +34,8 @@ public class CourseInfoAssessmentViewActivity extends AppCompatActivity {
     MaterialTextView instructorName;
     MaterialTextView instructorEmail;
     MaterialTextView instructorPhone;
+    MaterialButton addNoteButton;
+    MaterialButton viewNotesButton;
 
     RecyclerView recyclerView;
     List<Assessment> assessmentList;
@@ -52,12 +57,16 @@ public class CourseInfoAssessmentViewActivity extends AppCompatActivity {
         Database db = Database.getDatabase(getApplication());
         activeCourse = db.activeCourse;
         courseDAO = db.courseDAO();
+        NoteDAO noteDAO = db.noteDAO();
         assessmentDAO = db.assessmentDAO();
         course = courseDAO.getCourseById(activeCourse);
 
         initializeViews();
         loadCourseInfoIntoViews(course);
         initializeClickListeners();
+
+        noteDAO.insertNote(new Note("title", "content", activeCourse));
+
     }
 
     @Override
@@ -73,8 +82,13 @@ public class CourseInfoAssessmentViewActivity extends AppCompatActivity {
         instructorName = findViewById(R.id.instructorName);
         instructorEmail = findViewById(R.id.instructorEmail);
         instructorPhone = findViewById(R.id.instructorPhone);
+        addNoteButton = findViewById(R.id.addNotesButton);
+        viewNotesButton = findViewById(R.id.viewNotesButton);
+
         fab = findViewById(R.id.assessmentFab);
+
         assessmentList = assessmentDAO.getAllByCourseId(activeCourse);
+
         recyclerView = findViewById(R.id.assessmentRecycler);
         recyclerView.setAdapter(new AssessmentRecyclerAdapter(assessmentList, this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -96,6 +110,14 @@ public class CourseInfoAssessmentViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), EditAssessmentActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        viewNotesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), NotesViewActivity.class);
                 startActivity(intent);
             }
         });

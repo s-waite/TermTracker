@@ -13,13 +13,12 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.sam.termtracker.DAO.AssessmentDAO;
 import com.sam.termtracker.DAO.NoteDAO;
 import com.sam.termtracker.Database.Database;
-import com.sam.termtracker.Entity.Assessment;
 import com.sam.termtracker.Entity.Note;
 import com.sam.termtracker.R;
-import com.sam.termtracker.UI.EditCourseActivity;
+import com.sam.termtracker.UI.form.EditCourseActivity;
+import com.sam.termtracker.UI.form.EditNoteActivity;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
         public ViewHolder(View view) {
             super(view);
             titleView = (TextView) view.findViewById(R.id.itemTextView);
-            contentView = view.findViewById(R.id.content);
+            contentView = view.findViewById(R.id.noteContent);
             editButton = view.findViewById(R.id.editButton);
             deleteButton = view.findViewById(R.id.deleteButton);
             db = Database.getDatabase(context);
@@ -83,7 +82,7 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.list_item_assessment, viewGroup, false);
+                .inflate(R.layout.list_item_note, viewGroup, false);
         return new ViewHolder(view);
     }
 
@@ -95,8 +94,8 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
         viewHolder.getEditButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, EditCourseActivity.class);
-                intent.putExtra("name", localDataSet.get(position).title);
+                Intent intent = new Intent(context, EditNoteActivity.class);
+                intent.putExtra("id", localDataSet.get(position).id);
                 context.startActivity(intent);
             }
         });
@@ -105,7 +104,7 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
             @Override
             public void onClick(View view) {
                 AlertDialog myDialog = new MaterialAlertDialogBuilder(context)
-                        .setTitle("Delete This Course?")
+                        .setTitle("Delete This Note?")
                         .setMessage("This cannot be undone")
                         .setPositiveButton("Confirm", (dialogInterface, i) -> {
                             noteDAO.deleteNote(localDataSet.get(position));

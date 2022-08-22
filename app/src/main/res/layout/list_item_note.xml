@@ -49,7 +49,7 @@
 
 
     <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/content"
+        android:id="@+id/noteContent"
         android:paddingHorizontal="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

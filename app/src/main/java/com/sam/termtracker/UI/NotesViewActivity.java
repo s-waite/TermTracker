@@ -1,6 +1,5 @@
 package com.sam.termtracker.UI;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,45 +10,35 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.sam.termtracker.DAO.TermDAO;
+import com.sam.termtracker.DAO.NoteDAO;
 import com.sam.termtracker.Database.Database;
-import com.sam.termtracker.Entity.Term;
+import com.sam.termtracker.Entity.Note;
 import com.sam.termtracker.R;
 import com.sam.termtracker.UI.form.EditTermActivity;
-import com.sam.termtracker.UI.recyclerAdapter.TermRecyclerAdapter;
+import com.sam.termtracker.UI.recyclerAdapter.NoteRecyclerAdapter;
 
 import java.util.List;
 
-public class TermViewActivity extends AppCompatActivity {
+public class NotesViewActivity extends AppCompatActivity {
+    NoteDAO noteDAO;
     RecyclerView recyclerView;
     FloatingActionButton fab;
-    public AlertDialog myDialog;
-    TermDAO termDAO;
 
-    /**
-     * Shows a list of terms and a button to create new ones.
-     *
-     * Uses the {@link TermRecyclerAdapter} to display the list of terms and control the click events.
-     *
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_term_view);
-        getSupportActionBar().setTitle("Terms");
+        setContentView(R.layout.activity_notes_view);
+
+        getSupportActionBar().setTitle("Notes");
 
         Database db = Database.getDatabase(getApplication());
-        // Set the active term stored in the database to null because when we are in the term view
-        // there is not 'active' term
-        db.activeTerm = null;
 
-        termDAO = db.termDao();
-        List<Term> termList = termDAO.getAll();
+        noteDAO = db.noteDAO();
+        List<Note> noteList = noteDAO.getAll();
 
         // Set up the recycler
         recyclerView = findViewById(R.id.recycler);
-        recyclerView.setAdapter(new TermRecyclerAdapter(termList, this));
+        recyclerView.setAdapter(new NoteRecyclerAdapter(noteList, this));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 

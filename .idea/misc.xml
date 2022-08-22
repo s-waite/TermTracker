@@ -9,8 +9,10 @@
         <entry key="app/src/main/res/layout/activity_course_view.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_edit_assessment.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_edit_course.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_edit_note.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_edit_term.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_notes_view.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_term_info_course_view.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_term_view.xml" value="0.16893115942028986" />
         <entry key="app/src/main/res/layout/layout.xml" value="0.15081521739130435" />

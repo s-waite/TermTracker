@@ -14,13 +14,21 @@
         android:theme="@style/Theme.TermTracker"
         tools:targetApi="31">
         <activity
-            android:name=".UI.EditAssessmentActivity"
+            android:name=".UI.NotesViewActivity"
             android:parentActivityName=".UI.CourseInfoAssessmentViewActivity"
             android:exported="false" />
         <activity
-            android:name=".UI.EditCourseActivity"
+            android:name=".UI.form.EditAssessmentActivity"
+            android:exported="false"
+            android:parentActivityName=".UI.CourseInfoAssessmentViewActivity" />
+        <activity
+            android:name=".UI.form.EditCourseActivity"
             android:exported="false"
             android:parentActivityName=".UI.TermInfoCourseViewActivity" />
+        <activity
+            android:name=".UI.form.EditNoteActivity"
+            android:exported="false"
+            android:parentActivityName=".UI.CourseInfoAssessmentViewActivity" />
         <activity
             android:name=".UI.CourseInfoAssessmentViewActivity"
             android:exported="false"
@@ -30,7 +38,7 @@
             android:exported="false"
             android:parentActivityName=".UI.TermViewActivity" />
         <activity
-            android:name=".UI.EditTermActivity"
+            android:name=".UI.form.EditTermActivity"
             android:exported="false"
             android:parentActivityName=".UI.TermViewActivity" />
         <activity
