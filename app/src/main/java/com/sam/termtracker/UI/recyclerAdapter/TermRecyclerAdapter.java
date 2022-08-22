@@ -114,9 +114,10 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
                             .setTitle("Delete This Term?")
                             .setMessage("This cannot be undone")
                             .setPositiveButton("Confirm", (dialogInterface, i) -> {
-                                termDAO.deleteTerm(localDataSet.get(position));
-                                localDataSet.remove(position);
-                                notifyItemRemoved(position);
+                                int currentPos = viewHolder.getAdapterPosition();
+                                termDAO.deleteTerm(localDataSet.get(currentPos));
+                                localDataSet.remove(currentPos);
+                                notifyItemRemoved(currentPos);
                             })
                             .setNegativeButton("Cancel", ((dialogInterface, i) -> {
                                 dialogInterface.dismiss();

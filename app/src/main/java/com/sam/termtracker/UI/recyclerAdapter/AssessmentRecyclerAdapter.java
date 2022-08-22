@@ -103,9 +103,10 @@ public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRe
                         .setTitle("Delete This Course?")
                         .setMessage("This cannot be undone")
                         .setPositiveButton("Confirm", (dialogInterface, i) -> {
-                            assessmentDAO.deleteAssessment(localDataSet.get(position));
-                            localDataSet.remove(position);
-                            notifyItemRemoved(position);
+                            int currentPos = viewHolder.getAdapterPosition();
+                            assessmentDAO.deleteAssessment(localDataSet.get(currentPos));
+                            localDataSet.remove(currentPos);
+                            notifyItemRemoved(currentPos);
                         })
                         .setNegativeButton("Cancel", ((dialogInterface, i) -> {
                             dialogInterface.dismiss();

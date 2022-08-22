@@ -107,9 +107,10 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
                         .setTitle("Delete This Note?")
                         .setMessage("This cannot be undone")
                         .setPositiveButton("Confirm", (dialogInterface, i) -> {
-                            noteDAO.deleteNote(localDataSet.get(position));
-                            localDataSet.remove(position);
-                            notifyItemRemoved(position);
+                            int currentPos = viewHolder.getAdapterPosition();
+                            noteDAO.deleteNote(localDataSet.get(currentPos));
+                            localDataSet.remove(currentPos);
+                            notifyItemRemoved(currentPos);
                         })
                         .setNegativeButton("Cancel", ((dialogInterface, i) -> {
                             dialogInterface.dismiss();

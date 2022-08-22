@@ -119,9 +119,10 @@ public class CourseRecyclerAdapter extends RecyclerView.Adapter<CourseRecyclerAd
                         .setTitle("Delete This Course?")
                         .setMessage("This cannot be undone")
                         .setPositiveButton("Confirm", (dialogInterface, i) -> {
-                            courseDAO.deleteCourse(localDataSet.get(position));
-                            localDataSet.remove(position);
-                            notifyItemRemoved(position);
+                            int currentPos = viewHolder.getAdapterPosition();
+                            courseDAO.deleteCourse(localDataSet.get(currentPos));
+                            localDataSet.remove(currentPos);
+                            notifyItemRemoved(currentPos);
                         })
                         .setNegativeButton("Cancel", ((dialogInterface, i) -> {
                             dialogInterface.dismiss();
