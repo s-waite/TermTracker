@@ -14,6 +14,7 @@ import com.sam.termtracker.DAO.NoteDAO;
 import com.sam.termtracker.Database.Database;
 import com.sam.termtracker.Entity.Note;
 import com.sam.termtracker.R;
+import com.sam.termtracker.UI.form.EditNoteActivity;
 import com.sam.termtracker.UI.form.EditTermActivity;
 import com.sam.termtracker.UI.recyclerAdapter.NoteRecyclerAdapter;
 
@@ -47,7 +48,7 @@ public class NotesViewActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), EditTermActivity.class);
+                Intent intent = new Intent(getApplicationContext(), EditNoteActivity.class);
                 startActivity(intent);
             }
         });
