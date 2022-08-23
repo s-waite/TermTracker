@@ -3,10 +3,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string-array name="course_status">
-        in progress, completed, dropped, plan to take
         <item>In Progress</item>
         <item>Complete</item>
         <item>Dropped</item>
         <item>Plan to Take</item>
+    </string-array>
+    <string-array name="assessment_types">
+        <item>Objective</item>
+        <item>Performance</item>
     </string-array>
 </resources>

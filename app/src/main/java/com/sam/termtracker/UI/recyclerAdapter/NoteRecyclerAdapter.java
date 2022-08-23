@@ -38,6 +38,7 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
         private final TextView contentView;
         private final ImageButton editButton;
         private final ImageButton deleteButton;
+        private final ImageButton shareButton;
 
         public ViewHolder(View view) {
             super(view);
@@ -45,6 +46,7 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
             contentView = view.findViewById(R.id.noteContent);
             editButton = view.findViewById(R.id.editButton);
             deleteButton = view.findViewById(R.id.deleteButton);
+            shareButton = view.findViewById(R.id.shareButton);
             db = Database.getDatabase(context);
             noteDAO = db.noteDAO();
         }
@@ -64,6 +66,8 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
         public ImageButton getDeleteButton() {
             return deleteButton;
         }
+
+        public ImageButton getShareButton() { return shareButton; }
     }
 
     /**
@@ -95,8 +99,21 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EditNoteActivity.class);
-                intent.putExtra("id", localDataSet.get(position).id);
+                intent.putExtra("id", localDataSet.get(viewHolder.getAdapterPosition()).id);
                 context.startActivity(intent);
+            }
+        });
+
+        viewHolder.shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, localDataSet.get(viewHolder.getAdapterPosition()).content);
+                sendIntent.setType("text/plain");
+
+                Intent shareIntent = Intent.createChooser(sendIntent, null);
+                context.startActivity(shareIntent);
             }
         });
 
@@ -117,7 +134,6 @@ public class NoteRecyclerAdapter extends RecyclerView.Adapter<NoteRecyclerAdapte
                         }))
                         .create();
                 myDialog.show();
-
             }
         });
 

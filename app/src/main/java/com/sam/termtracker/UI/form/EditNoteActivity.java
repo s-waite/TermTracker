@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,6 +19,7 @@ import com.sam.termtracker.Entity.Assessment;
 import com.sam.termtracker.Entity.Note;
 import com.sam.termtracker.R;
 import com.sam.termtracker.UI.CourseInfoAssessmentViewActivity;
+import com.sam.termtracker.UI.NotesViewActivity;
 
 
 public class EditNoteActivity extends AppCompatActivity {
@@ -28,6 +30,9 @@ public class EditNoteActivity extends AppCompatActivity {
     FloatingActionButton fab;
     AlertDialog errorDialog;
     Boolean newNote;
+    String title;
+    String content;
+    ActionBar actionBar;
 
     Database db;
     int activeCourse;
@@ -41,6 +46,7 @@ public class EditNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_note);
 
         initializeViews();
+        initializeClickListeners();
 
         Database db = Database.getDatabase(getApplication());
         activeCourse = db.activeCourse;
@@ -51,8 +57,10 @@ public class EditNoteActivity extends AppCompatActivity {
             noteId = extras.getInt("id");
             note = noteDAO.getNoteById(noteId);
             loadDataIntoViews(note);
+            actionBar.setTitle("Edit Note");
             newNote = false;
         } else {
+            actionBar.setTitle("Create Note");
             newNote = true;
         }
     }
@@ -63,6 +71,7 @@ public class EditNoteActivity extends AppCompatActivity {
         contentInput = findViewById(R.id.content);
         contentInputLayout = findViewById(R.id.contentLayout);
         fab = findViewById(R.id.floating_action_button);
+        actionBar = getSupportActionBar();
         errorDialog = new MaterialAlertDialogBuilder(this)
                 .setTitle("Error")
                 .setMessage("Please make sure all forms are filled out correctly")
@@ -72,14 +81,39 @@ public class EditNoteActivity extends AppCompatActivity {
                 .create();
     }
 
-    private void loadDataIntoViews(Note note) {
-        titleInput.setText(note.title);
-        titleInput.setText(note.content);
+    private void initializeClickListeners() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveNote(view);
+            }
+        });
     }
 
-    public void saveAssessment(View view) {
-        noteDAO.insertNote(new Note(titleInput.getText().toString(), contentInput.getText().toString(), activeCourse));
-        Intent intent = new Intent(getApplicationContext(), CourseInfoAssessmentViewActivity.class);
+    private void loadDataIntoViews(Note note) {
+        titleInput.setText(note.title);
+        contentInput.setText(note.content);
+    }
+
+
+    public void saveNote(View view) {
+        title = titleInput.getText().toString();
+        content = contentInput.getText().toString();
+
+        if (title.isEmpty() || content.isEmpty()) {
+            errorDialog.show();
+            return;
+        }
+
+        if (!newNote) {
+            note.title = title;
+            note.content = content;
+            noteDAO.updateNote(note);
+        } else {
+            noteDAO.insertNote(new Note(title, content, activeCourse));
+        }
+
+        Intent intent = new Intent(getApplicationContext(), NotesViewActivity.class);
         startActivity(intent);
     }
 }

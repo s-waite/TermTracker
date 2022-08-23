@@ -28,7 +28,7 @@
         <activity
             android:name=".UI.form.EditNoteActivity"
             android:exported="false"
-            android:parentActivityName=".UI.CourseInfoAssessmentViewActivity" />
+            android:parentActivityName=".UI.NotesViewActivity" />
         <activity
             android:name=".UI.CourseInfoAssessmentViewActivity"
             android:exported="false"
@@ -53,6 +53,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".BroadcastReceiver"/>
     </application>
 
 </manifest>

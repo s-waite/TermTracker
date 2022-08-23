@@ -5,15 +5,18 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.sam.termtracker.BroadcastReceiver;
 import com.sam.termtracker.DAO.CourseDAO;
 import com.sam.termtracker.DAO.TermDAO;
 import com.sam.termtracker.Database.Database;
@@ -21,10 +24,16 @@ import com.sam.termtracker.Entity.Course;
 import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.Helper;
 import com.sam.termtracker.R;
+import com.sam.termtracker.UI.MainActivity;
 import com.sam.termtracker.UI.TermInfoCourseViewActivity;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -42,6 +51,8 @@ public class EditCourseActivity extends AppCompatActivity {
     TextInputEditText instructorEmailInput;
     TextInputEditText instructorPhoneInput;
     MaterialAutoCompleteTextView courseStatusInput;
+    MaterialSwitch startDateSwitch;
+    MaterialSwitch endDateSwitch;
 
     TextInputLayout courseNameInputLayout;
     TextInputLayout startDateInputLayout;
@@ -84,6 +95,8 @@ public class EditCourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_course);
+
+        createNotificationChannel();
 
         emailPattern = Pattern.compile("^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$", Pattern.CASE_INSENSITIVE);
         phonePattern = Pattern.compile("[0-9]{3}-[0-9]{3}-[0-9]{4}");
@@ -128,6 +141,8 @@ public class EditCourseActivity extends AppCompatActivity {
         instructorEmailInput = findViewById(R.id.instructorEmail);
         instructorPhoneInput = findViewById(R.id.instructorPhone);
         courseStatusInput = findViewById(R.id.courseStatus);
+        startDateSwitch = findViewById(R.id.startDateSwitch);
+        endDateSwitch = findViewById(R.id.endDateSwitch);
 
         courseNameInputLayout = findViewById(R.id.courseNameLayout);
         startDateInputLayout = findViewById(R.id.startDateCourseLayout);
@@ -329,6 +344,43 @@ public class EditCourseActivity extends AppCompatActivity {
         instructorEmailInput.setText(instructorEmail);
         instructorPhoneInput.setText(instructorPhone);
         courseStatusInput.setText(courseStatus, false);
+        startDateSwitch.setChecked(course.notifyBeforeStart);
+        endDateSwitch.setChecked(course.notifyBeforeEnd);
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "MY_CHANNEL";
+            String description = "MY_DESC";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel("MY_CHANNEL", name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    private void setDateNotifications(MaterialSwitch startDateSwitch, MaterialSwitch endDateSwitch) {
+        Intent intent = new Intent(this, BroadcastReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_MUTABLE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        int TWELVE_HOURS_IN_SECONDS = 43200;
+        // reset the notifications
+        alarmManager.cancel(pendingIntent);
+
+        if (startDateSwitch.isChecked()) {
+            long startDateInMillis = (startDateInTimestamp - TWELVE_HOURS_IN_SECONDS) * 1000;
+            alarmManager.set(AlarmManager.RTC_WAKEUP, startDateInMillis, pendingIntent);
+        }
+
+        if (endDateSwitch.isChecked()) {
+            long endDateInMillis = (endDateInTimestamp - TWELVE_HOURS_IN_SECONDS) * 1000;
+            alarmManager.set(AlarmManager.RTC_WAKEUP, endDateInMillis, pendingIntent);
+        }
     }
 
     /**
@@ -339,6 +391,7 @@ public class EditCourseActivity extends AppCompatActivity {
      * @param view
      */
     public void saveCourse(View view) {
+
         // Clear errors from previous save attempts
         clearFormErrors();
 
@@ -357,6 +410,8 @@ public class EditCourseActivity extends AppCompatActivity {
             course.instructorEmail = instructorEmailInput.getText().toString();
             course.instructorPhone = instructorPhoneInput.getText().toString();
             course.courseStatus = courseStatusInput.getText().toString();
+            course.notifyBeforeStart = startDateSwitch.isChecked();
+            course.notifyBeforeEnd = endDateSwitch.isChecked();
             courseDAO.updateCourse(course);
         } else {
             courseDAO.insertCourse(new Course(
@@ -367,13 +422,19 @@ public class EditCourseActivity extends AppCompatActivity {
                     instructorNameInput.getText().toString(),
                     instructorEmailInput.getText().toString(),
                     instructorPhoneInput.getText().toString(),
-                    courseStatusInput.getText().toString()
-                    ));
+                    courseStatusInput.getText().toString(),
+                    startDateSwitch.isChecked(),
+                    endDateSwitch.isChecked()
+            ));
         }
 
         // now that we are finished with the course we can set it as null so that it is not loaded
         // into the add/edit course form when we want to add a new course
         db.activeCourse = null;
+
+        // Set notifications if needed
+        setDateNotifications(startDateSwitch, endDateSwitch);
+
         Intent intent = new Intent(this, TermInfoCourseViewActivity.class);
         startActivity(intent);
     }

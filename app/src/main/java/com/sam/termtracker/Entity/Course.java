@@ -17,7 +17,17 @@ public class Course {
     public Course() {
     }
 
-    public Course(String name, int startDate, int endDate, int termId, String instructorName, String instructorEmail, String instructorPhone, String courseStatus) {
+    public Course(String name,
+                  int startDate,
+                  int endDate,
+                  int termId,
+                  String instructorName,
+                  String instructorEmail,
+                  String instructorPhone,
+                  String courseStatus,
+                  Boolean notifyBeforeStart,
+                  Boolean notifyBeforeEnd
+    ) {
        this.name = name;
        this.startDate = startDate;
        this.endDate = endDate;
@@ -26,6 +36,8 @@ public class Course {
        this.instructorEmail = instructorEmail;
        this.instructorPhone = instructorPhone;
        this.courseStatus = courseStatus;
+       this.notifyBeforeStart = notifyBeforeStart;
+       this.notifyBeforeEnd = notifyBeforeEnd;
     }
 
     @PrimaryKey(autoGenerate = true)
@@ -54,4 +66,10 @@ public class Course {
 
     @ColumnInfo(name = "courseStatus")
     public String courseStatus;
+
+    @ColumnInfo(name = "notifyBeforeStart")
+    public Boolean notifyBeforeStart;
+
+    @ColumnInfo(name = "notifyBeforeEnd")
+    public Boolean notifyBeforeEnd;
 }

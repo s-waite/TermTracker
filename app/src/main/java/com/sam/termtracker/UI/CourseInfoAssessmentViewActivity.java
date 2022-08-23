@@ -1,5 +1,6 @@
 package com.sam.termtracker.UI;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -18,6 +19,7 @@ import com.sam.termtracker.Entity.Note;
 import com.sam.termtracker.Helper;
 import com.sam.termtracker.R;
 import com.sam.termtracker.UI.form.EditAssessmentActivity;
+import com.sam.termtracker.UI.form.EditNoteActivity;
 import com.sam.termtracker.UI.recyclerAdapter.AssessmentRecyclerAdapter;
 
 import android.content.Intent;
@@ -41,6 +43,7 @@ public class CourseInfoAssessmentViewActivity extends AppCompatActivity {
     List<Assessment> assessmentList;
 
     FloatingActionButton fab;
+    ActionBar actionBar;
 
     Database db;
     Course course;
@@ -61,12 +64,12 @@ public class CourseInfoAssessmentViewActivity extends AppCompatActivity {
         assessmentDAO = db.assessmentDAO();
         course = courseDAO.getCourseById(activeCourse);
 
+
         initializeViews();
         loadCourseInfoIntoViews(course);
         initializeClickListeners();
 
-        noteDAO.insertNote(new Note("title", "content", activeCourse));
-
+        actionBar.setTitle("Course Info");
     }
 
     @Override
@@ -84,6 +87,7 @@ public class CourseInfoAssessmentViewActivity extends AppCompatActivity {
         instructorPhone = findViewById(R.id.instructorPhone);
         addNoteButton = findViewById(R.id.addNotesButton);
         viewNotesButton = findViewById(R.id.viewNotesButton);
+        actionBar = getSupportActionBar();
 
         fab = findViewById(R.id.assessmentFab);
 
@@ -118,6 +122,14 @@ public class CourseInfoAssessmentViewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), NotesViewActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        addNoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), EditNoteActivity.class);
                 startActivity(intent);
             }
         });

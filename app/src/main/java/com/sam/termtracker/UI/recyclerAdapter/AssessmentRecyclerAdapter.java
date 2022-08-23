@@ -45,6 +45,15 @@ public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRe
             deleteButton = view.findViewById(R.id.deleteButton);
             db = Database.getDatabase(context);
             assessmentDAO = db.assessmentDAO();
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, EditAssessmentActivity.class);
+                    intent.putExtra("id", localDataSet.get(getAdapterPosition()).id);
+                    intent.putExtra("detailedView", true);
+                    context.startActivity(intent);
+                }
+            });
         }
 
         public TextView getTextView() {
@@ -100,7 +109,7 @@ public class AssessmentRecyclerAdapter extends RecyclerView.Adapter<AssessmentRe
             @Override
             public void onClick(View view) {
                 AlertDialog myDialog = new MaterialAlertDialogBuilder(context)
-                        .setTitle("Delete This Course?")
+                        .setTitle("Delete This Assessment?")
                         .setMessage("This cannot be undone")
                         .setPositiveButton("Confirm", (dialogInterface, i) -> {
                             int currentPos = viewHolder.getAdapterPosition();

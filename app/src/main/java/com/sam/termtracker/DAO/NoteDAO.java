@@ -23,7 +23,7 @@ public interface NoteDAO {
     @Update
     void updateNote(Note note);
 
-    @Query("SELECT * FROM notes")
+    @Query("SELECT * FROM notes ORDER BY title ASC")
     List<Note> getAll();
 
     @Query("SELECT * FROM notes WHERE courseId = :courseId")
