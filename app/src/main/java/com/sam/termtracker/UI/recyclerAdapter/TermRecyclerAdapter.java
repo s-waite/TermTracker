@@ -13,8 +13,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.sam.termtracker.DAO.CourseDAO;
 import com.sam.termtracker.DAO.TermDAO;
 import com.sam.termtracker.Database.Database;
+import com.sam.termtracker.Entity.Course;
 import com.sam.termtracker.Entity.Term;
 import com.sam.termtracker.R;
 import com.sam.termtracker.UI.form.EditTermActivity;
@@ -29,8 +31,10 @@ import java.util.List;
 public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapter.ViewHolder> {
     private List<Term> localDataSet;
     private AlertDialog deleteTermAlertDialog;
+    private AlertDialog cannotDeleteTermAlertDialog;
     private Context context;
     private TermDAO termDAO;
+    private CourseDAO courseDAO;
     private Database db;
 
     /**
@@ -48,6 +52,7 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
             deleteButton = view.findViewById(R.id.deleteButton);
             db = Database.getDatabase(context);
             termDAO = db.termDao();
+            courseDAO = db.courseDAO();
 
             // Open the term info along with course list when this item is pressed
             view.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +115,14 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
         viewHolder.getDeleteButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    deleteTermAlertDialog = new MaterialAlertDialogBuilder(context)
+                cannotDeleteTermAlertDialog = new MaterialAlertDialogBuilder(context)
+                        .setTitle("Cannot delete term")
+                        .setMessage("This term has associated courses")
+                        .setPositiveButton("OK", (dialogInterface, i) -> {
+                            dialogInterface.dismiss();
+                        })
+                        .create();
+                deleteTermAlertDialog = new MaterialAlertDialogBuilder(context)
                             .setTitle("Delete This Term?")
                             .setMessage("This cannot be undone")
                             .setPositiveButton("Confirm", (dialogInterface, i) -> {
@@ -123,7 +135,16 @@ public class TermRecyclerAdapter extends RecyclerView.Adapter<TermRecyclerAdapte
                                 dialogInterface.dismiss();
                             }))
                             .create();
-                deleteTermAlertDialog.show();
+                // Check if term has associated courses
+                // get the term id, loop through all courses and see if any have that as
+                Term term = localDataSet.get(viewHolder.getAdapterPosition());
+                int termId = term.id;
+                List<Course> coursesWithAssociatedTerm = courseDAO.getAllCoursesWithTermId(termId);
+                if (coursesWithAssociatedTerm.size() > 0) {
+                   cannotDeleteTermAlertDialog.show();
+                } else {
+                    deleteTermAlertDialog.show();
+                }
             }
         });
 
